@@ -20,7 +20,25 @@ const ReviewsSchema = new Schema({
     required: [true, 'The Review Title field is required'],
   },
 
-  text: String
+  text: String,
+
+  meta: {
+    beliefCount: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
+    disbeliefCount: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
+    uncertaintyCount: {
+      type: Number,
+      min: 0,
+      default: 0
+    }
+  }
 }, { emitIndexErrors: true });
 
 ReviewsSchema.index({ _creator: 1, _location: 1 }, { unique: true });

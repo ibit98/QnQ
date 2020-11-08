@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const Users = require ('../../models/users');
+const Reviews = require ('../../models/reviews');
 
 const currentRoute = '/api/users';
 
@@ -11,7 +12,7 @@ router.get('/', (req, res, next) => {
   const resPerPage = 25;
   const page = parseInt(req.query.page) || 1;
 
-  console.log(chalk.inverse.blue('GET') + '  : ' + chalk.italic.cyan(currentRoute + '?page=' + page));
+  console.log(chalk.inverse.blue('GET') + '   : ' + chalk.italic.cyan(currentRoute + '?page=' + page));
 
   if (page < 1) {
     throw Error('Non-positive Page Number');
@@ -26,12 +27,30 @@ router.get('/', (req, res, next) => {
 
 // Get Details of a single User
 router.get('/:id', (req, res, next) => {
-  console.log(chalk.inverse.blue('GET') + '  : ' + chalk.italic.cyan(currentRoute + '/' + req.params.id));
+  console.log(chalk.inverse.blue('GET') + '   : ' + chalk.italic.cyan(currentRoute + '/' + req.params.id));
 
   // this will return all the data
   Users.findById(req.params.id)
        .then( data => { res.json(data); } )
        .catch(next);
+});
+
+// Get Paginated Reviews done by a single User
+router.get('/:id/reviews', (req, res, next) => {
+  const resPerPage = 25;
+  const page = parseInt(req.query.page) || 1;
+
+  console.log(chalk.inverse.blue('GET') + '   : ' + chalk.italic.cyan(currentRoute + '/' + req.params.id + '/reviews'));
+
+  if (page < 1) {
+    throw Error('Non-positive Page Number');
+  }
+
+  Reviews.find({ '_creator': req.params.id })
+         .skip(resPerPage * (page - 1))
+         .limit(resPerPage)
+         .then( data => { res.json(data); } )
+         .catch(next)
 });
 
 router.post('/', (req, res, next) => {
