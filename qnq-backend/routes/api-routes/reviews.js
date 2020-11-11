@@ -2,15 +2,11 @@ const chalk = require('chalk');
 const express = require('express');
 const router = express.Router();
 
-const Reviews = require ('../../models/reviews');
+const calculate_QoI = require ('../../helpers/qoi');
 const Ratings = require ('../../models/ratings');
+const Reviews = require ('../../models/reviews');
 
 const currentRoute = '/api/reviews';
-const metaStrings = {
-  'helpful': 'meta.beliefCount',
-  'harmful': 'meta.disbeliefCount',
-  'uncertain': 'meta.uncertaintyCount'
-}
 
 // Get Paginated Details of all Reviews
 router.get('/', (req, res, next) => {
@@ -41,7 +37,7 @@ router.get('/:id', (req, res, next) => {
          .catch(next);
 });
 
-// Post a new rating
+// Post a new review
 router.post('/', (req, res, next) => {
   console.log(chalk.inverse.green('POST') + ' : ' + chalk.italic.cyan('/api/reviews'));
 
@@ -82,39 +78,52 @@ router.post('/:reviewId/rate', (req, res, next) => {
     + chalk.gray(`{userId=${userId}, feedback=${feedback}}`)
   );
 
-  // Reviews.findOne({ _id: reviewId }, (err, doc) => {
-  //   if ((err) || (!doc)) {
-  //       return false;
-  //   }
-  // });
-
   Ratings.findOneAndUpdate(
     { _rater: userId, _review: reviewId },
     { feedback: feedback },
     { upsert: true }
-  ).then(data => {
-    reviewUpdate = { $inc: {} };
+  ).then(oldRatingData => {
+    Reviews.findOne({ _id: reviewId }, (err, reviewData) => {
+      if ((err) || (!reviewData)) {
+          throw Error(`Corresponding Review to Rating (_id=${oldRatingData._id}) does not exist`);
+      }
+      return reviewData;
+    }).then(oldReviewData => {
+      let reviewUpdate = {
+        meta: {
+          beliefCount: oldReviewData.meta.beliefCount,
+          disbeliefCount: oldReviewData.meta.disbeliefCount,
+          uncertaintyCount: oldReviewData.meta.uncertaintyCount
+        }
+      }
 
-    if (data !== null) {
-      // modifying Rating
-      // Add update to decrement belief/disbelief/uncertainty count based on previous feedback
-      reviewUpdate.$inc[metaStrings[data.feedback]] = -1;
-    }
+      if (oldRatingData) {
+        switch (oldRatingData.feedback) {
+          case 'helpful': reviewUpdate.meta.beliefCount -= 1; break;
+          case 'harmful': reviewUpdate.meta.disbeliefCount -= 1; break;
+          case 'uncertain': reviewUpdate.meta.uncertaintyCount -= 1; break;
+        }
+      }
 
-    // Add update to increment belief/disbelief/uncertainty count
-    reviewUpdate.$inc[metaStrings[feedback]] =
-      (reviewUpdate.$inc[metaStrings[feedback]] || 0) + 1;
+      switch (feedback) {
+        case 'helpful': reviewUpdate.meta.beliefCount += 1; break;
+        case 'harmful': reviewUpdate.meta.disbeliefCount += 1; break;
+        case 'uncertain': reviewUpdate.meta.uncertaintyCount = reviewUpdate.meta.uncertaintyCount + 1; break;
+      }
 
-    responseData = { rating: data };
+      reviewUpdate.meta.QoI = calculate_QoI(reviewUpdate.meta);
 
-    Reviews.findByIdAndUpdate(
-      reviewId,
-      reviewUpdate,
-    ).then(data => {
-      responseData.review = data;
+      responseData = { oldRating: oldRatingData };
+
+      Reviews.findByIdAndUpdate(
+        reviewId,
+        reviewUpdate,
+      ).then(data => {
+        responseData.oldReview = data;
+      });
+
+      return res.json(responseData);
     });
-
-    return res.json(responseData);
   }).catch(next);
 });
 

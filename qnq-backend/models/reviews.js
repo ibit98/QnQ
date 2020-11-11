@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const calculate_QoI = require ('../helpers/qoi');
+
 // create schema for Reviews
 const ReviewsSchema = new Schema({
   _creator: {
@@ -37,6 +39,10 @@ const ReviewsSchema = new Schema({
       type: Number,
       min: 0,
       default: 0
+    },
+    QoI: {
+      type: Number,
+      default: calculate_QoI({ beliefCount: 0, disbeliefCount: 0, uncertaintyCount: 0 })
     }
   }
 }, { emitIndexErrors: true });
