@@ -127,10 +127,4 @@ router.post('/:reviewId/rate', (req, res, next) => {
   }).catch(next);
 });
 
-// router.delete('/users/:id', (req, res, next) => {
-//   // Todo.findOneAndDelete({"_id": req.params.id})
-//   //   .then(data => res.json(data))
-//   //   .catch(next)
-// })
-
 module.exports = router;
