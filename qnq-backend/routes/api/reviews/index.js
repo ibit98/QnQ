@@ -2,9 +2,9 @@ const chalk = require("chalk");
 const express = require("express");
 const router = express.Router();
 
-const calculate_QoI = require("../../helpers/qoi");
-const Ratings = require("../../models/ratings");
-const Reviews = require("../../models/reviews");
+const calculate_QoI = require("../../../helpers/qoi");
+const Ratings = require("../../../models/ratings");
+const Reviews = require("../../../models/reviews");
 
 const currentRoute = "/api/reviews";
 

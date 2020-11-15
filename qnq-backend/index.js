@@ -1,17 +1,24 @@
 const bodyParser = require("body-parser");
 const chalk = require("chalk");
 require("dotenv").config();
+// const errorHandler = require('errorhandler');
 const express = require("express");
+const session = require("express-session");
 const mongoose = require("mongoose");
 const path = require("path");
 
-const routes = require("./routes/api");
+require("./config/passport");
+
+const routes = require("./routes");
+
+// Configure isProduction variable
+const isDevelopment = process.env.NODE_ENV === "development";
 
 const app = express();
 
 const port = process.env.PORT || 5000;
 
-//connect to the database
+// Connect to the database
 mongoose
   .connect(process.env.DB, {
     useNewUrlParser: true,
@@ -21,6 +28,7 @@ mongoose
   })
   .then(() => console.log(`Database connected successfully`))
   .catch((err) => console.log(err));
+// mongoose.set("debug", true);
 
 //since mongoose promise is depreciated, we overide it with node's promise
 mongoose.Promise = global.Promise;
@@ -36,13 +44,32 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.use("/api", routes);
+// if(!isProduction) {
+//   app.use(errorHandler());
+// }
+//
+app.use("/", routes);
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "session-secret",
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// if (!isProduction) {
 app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    error: err.message,
+  });
+
   console.log(chalk.red(err.message));
   console.log(err);
   next();
 });
+// }
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

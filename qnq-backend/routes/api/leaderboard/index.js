@@ -2,7 +2,7 @@ const chalk = require("chalk");
 const express = require("express");
 const router = express.Router();
 
-const Reviews = require("../../models/reviews");
+const Reviews = require("../../../models/reviews");
 
 const currentRoute = "/api/leaderboard";
 
