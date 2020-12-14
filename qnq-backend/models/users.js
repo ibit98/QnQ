@@ -42,17 +42,15 @@ UsersSchema.methods.validatePassword = function (password) {
 };
 
 UsersSchema.methods.generateJWT = function () {
-  const today = new Date();
-  const expirationDate = new Date(today);
-  expirationDate.setDate(today.getDate() + 1);
-
   return jwt.sign(
     {
       email: this.email,
       id: this._id,
-      exp: parseInt(expirationDate.getTime() / 1000, 10),
     },
-    process.env.JWT_SIGN_SECRET || "secret"
+    process.env.JWT_SIGN_SECRET || "secret",
+    {
+      expiresIn: "2d",
+    }
   );
 };
 

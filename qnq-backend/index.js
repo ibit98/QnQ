@@ -5,9 +5,8 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
+const passport = require("passport");
 const path = require("path");
-
-require("./config/passport");
 
 const routes = require("./routes");
 
@@ -30,7 +29,7 @@ mongoose
   .catch((err) => console.log(err));
 // mongoose.set("debug", true);
 
-//since mongoose promise is depreciated, we overide it with node's promise
+// since mongoose promise is depreciated, we overide it with node's promise
 mongoose.Promise = global.Promise;
 
 app.use((req, res, next) => {
@@ -44,12 +43,6 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-// if(!isProduction) {
-//   app.use(errorHandler());
-// }
-//
-app.use("/", routes);
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "session-secret",
@@ -58,6 +51,16 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+require("./config/passport");
+
+// if(!isProduction) {
+//   app.use(errorHandler());
+// }
+//
+app.use("/", routes);
 
 // if (!isProduction) {
 app.use((err, req, res, next) => {
