@@ -1,37 +1,39 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  drawermenuimage: {
-    height: 100,
-    width: 100,
-    marginLeft: 10,
-    borderRadius: 50,
-  },
-  drawerProfileView: {
-    paddingTop: 10,
-    height: 110,
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    backgroundColor: "green",
-  },
   drawer: {
     backgroundColor: "black",
   },
-  drawername: {
-    fontWeight: "bold",
-    paddingLeft: 10,
+  drawerProfileImage: {
+    borderRadius: 50,
+    height: 60,
+    marginLeft: 18,
+    marginTop: 30,
+    width: 60,
+  },
+  drawerProfileText: {
+    marginLeft: 8,
+    justifyContent: "center",
+  },
+  drawerProfileView: {
+    backgroundColor: "black",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    height: 120,
+  },
+  drawerProfileName: {
+    color: "white",
+    fontSize: 20,
+    height: 35,
+    paddingLeft: 8,
   },
   drawermobno: {
-    fontWeight: "bold",
+    color: "gray",
     paddingLeft: 10,
   },
-  drawermenutext: {
-    alignItems: "center",
-    justifyContent: "center",
+  icon: {
+    width: 20,
+    height: 20,
   },
 });
 

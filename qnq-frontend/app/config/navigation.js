@@ -14,7 +14,6 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
   createDrawerNavigator,
-  useIsDrawerOpen,
 } from "@react-navigation/drawer";
 
 // import AboutScreen from '../content/AboutScreen';
@@ -26,12 +25,12 @@ const CustomDrawer = (props) => (
   <DrawerContentScrollView {...props} style={styles.drawer}>
     <SafeAreaView style={styles.drawerProfileView}>
       <Image
-        source={require("../assets/icon.png")}
-        style={styles.drawermenuimage}
+        source={require("../assets/avatar-placeholder.jpg")}
+        style={styles.drawerProfileImage}
       ></Image>
-      <View style={styles.drawertext}>
-        <Text style={styles.drawername}>User1</Text>
-        <Text style={styles.drawermobno}>9988776655</Text>
+      <View style={styles.drawerProfileText}>
+        <Text style={styles.drawerProfileName}>User Name</Text>
+        <Text style={styles.drawermobno}>rating</Text>
       </View>
     </SafeAreaView>
     <DrawerItemList {...props} />
@@ -48,6 +47,11 @@ class QnQDrawer extends React.Component {
         drawerPosition="left"
         drawerType="front"
         drawerContent={CustomDrawer}
+        drawerContentOptions={{
+          activeTintColor: "#eb233a",
+          inactiveTintColor: "#eb233a",
+        }}
+        drawerStyle={{ width: 300 }}
       >
         <Drawer.Screen name="Home" component={HomeScreen} />
         <Drawer.Screen name="Profile" component={ProfileScreen} />
