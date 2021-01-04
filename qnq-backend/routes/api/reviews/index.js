@@ -26,7 +26,7 @@ router.get("/", (req, res, next) => {
   Reviews.find({})
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
-    .then((data) => {
+    .then(data => {
       res.json(data);
     })
     .catch(next);
@@ -42,7 +42,7 @@ router.get("/:id", (req, res, next) => {
 
   // this will return all the data
   Reviews.findById(req.params.id)
-    .then((data) => {
+    .then(data => {
       res.json(data);
     })
     .catch(next);
@@ -56,11 +56,11 @@ router.post("/", (req, res, next) => {
 
   if (req.body.title) {
     Reviews.create(req.body)
-      .then((data) => res.json(data))
+      .then(data => res.json(data))
       .catch(next);
   } else {
     res.json({
-      error: "Review Title is missing",
+      error: "Review Title is missing"
     });
   }
 });
@@ -69,7 +69,7 @@ router.post("/", (req, res, next) => {
 router.post("/:reviewId/rate", (req, res, next) => {
   if (!req.body.userId || !req.body.feedback) {
     res.json({
-      error: "User ID and/or Feedback is missing",
+      error: "User ID and/or Feedback is missing"
     });
     throw Error("Inserting Rating: User ID and/or Feedback is missing!");
   }
@@ -99,7 +99,7 @@ router.post("/:reviewId/rate", (req, res, next) => {
     { feedback: feedback },
     { upsert: true }
   )
-    .then((oldRatingData) => {
+    .then(oldRatingData => {
       Reviews.findOne({ _id: reviewId }, (err, reviewData) => {
         if (err || !reviewData) {
           throw Error(
@@ -107,13 +107,13 @@ router.post("/:reviewId/rate", (req, res, next) => {
           );
         }
         return reviewData;
-      }).then((oldReviewData) => {
+      }).then(oldReviewData => {
         let reviewUpdate = {
           meta: {
             beliefCount: oldReviewData.meta.beliefCount,
             disbeliefCount: oldReviewData.meta.disbeliefCount,
-            uncertaintyCount: oldReviewData.meta.uncertaintyCount,
-          },
+            uncertaintyCount: oldReviewData.meta.uncertaintyCount
+          }
         };
 
         if (oldRatingData) {
@@ -147,7 +147,7 @@ router.post("/:reviewId/rate", (req, res, next) => {
 
         responseData = { oldRating: oldRatingData };
 
-        Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then((data) => {
+        Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then(data => {
           responseData.oldReview = data;
         });
 

@@ -15,22 +15,22 @@ router.post("/", Auth.optional, (req, res, next) => {
   );
 
   const {
-    body: { user },
+    body: { user }
   } = req;
 
   if (!user.email) {
     return res.status(422).json({
       errors: {
-        email: "is required",
-      },
+        email: "is required"
+      }
     });
   }
 
   if (!user.password) {
     return res.status(422).json({
       errors: {
-        password: "is required",
-      },
+        password: "is required"
+      }
     });
   }
 
@@ -40,7 +40,7 @@ router.post("/", Auth.optional, (req, res, next) => {
 
   return finalUser
     .save()
-    .then((user) => res.json({ user: user.toAuthJSON() }))
+    .then(user => res.json({ user: user.toAuthJSON() }))
     .catch(next);
 });
 
@@ -53,22 +53,22 @@ router.post("/login", Auth.optional, (req, res, next) => {
   );
 
   const {
-    body: { user },
+    body: { user }
   } = req;
 
   if (!user.email) {
     return res.status(422).json({
       errors: {
-        email: "is required",
-      },
+        email: "is required"
+      }
     });
   }
 
   if (!user.password) {
     return res.status(422).json({
       errors: {
-        password: "is required",
-      },
+        password: "is required"
+      }
     });
   }
 
@@ -99,10 +99,10 @@ router.get("/me", Auth.required, (req, res, next) => {
   );
 
   const {
-    payload: { id },
+    payload: { id }
   } = req;
 
-  return Users.findById(id).then((user) => {
+  return Users.findById(id).then(user => {
     if (!user) {
       return res.sendStatus(400);
     }
@@ -112,10 +112,10 @@ router.get("/me", Auth.required, (req, res, next) => {
 });
 
 // GET logout user (Auth required, only authenticated users have access)
-router.get("/logout", Auth.required, function (req, res) {
+router.get("/logout", Auth.required, function(req, res) {
   req.logout();
   res.json({
-    message: "Logged out successfully",
+    message: "Logged out successfully"
   });
 });
 
@@ -129,7 +129,7 @@ router.get("/:id", Auth.optional, (req, res, next) => {
 
   // this will return all the data
   Users.findById(req.params.id)
-    .then((data) => {
+    .then(data => {
       res.json(data);
     })
     .catch(next);
@@ -153,7 +153,7 @@ router.get("/:id/reviews", (req, res, next) => {
   Reviews.find({ _creator: req.params.id })
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
-    .then((data) => {
+    .then(data => {
       res.json(data);
     })
     .catch(next);
