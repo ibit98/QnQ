@@ -8,12 +8,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
-  createDrawerNavigator,
+  createDrawerNavigator
 } from "@react-navigation/drawer";
 
 // import AboutScreen from '../content/AboutScreen';
@@ -21,7 +21,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import styles from "../styles/navigation-styles";
 
-const CustomDrawer = (props) => (
+const CustomDrawer = props => (
   <DrawerContentScrollView {...props} style={styles.drawer}>
     <SafeAreaView style={styles.drawerProfileView}>
       <Image
@@ -49,7 +49,7 @@ class QnQDrawer extends React.Component {
         drawerContent={CustomDrawer}
         drawerContentOptions={{
           activeTintColor: "#eb233a",
-          inactiveTintColor: "#eb233a",
+          inactiveTintColor: "#eb233a"
         }}
         drawerStyle={{ width: 300 }}
       >

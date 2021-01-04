@@ -15,7 +15,7 @@ import Icon from "react-native-vector-icons/Octicons";
 
 export default function HomeScreen({ navigation }) {
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerOpen", (e) => {
+    const unsubscribe = navigation.addListener("drawerOpen", e => {
       setStatusBarStyle("light");
     });
 
@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }) {
   }, [navigation]);
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerClose", (e) => {
+    const unsubscribe = navigation.addListener("drawerClose", e => {
       setStatusBarStyle("dark");
     });
 
@@ -35,7 +35,7 @@ export default function HomeScreen({ navigation }) {
       style={{
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "center"
       }}
     >
       <StatusBar style="dark" />

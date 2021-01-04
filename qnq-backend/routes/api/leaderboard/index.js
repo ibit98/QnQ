@@ -24,20 +24,20 @@ router.get("/", (req, res, next) => {
   Reviews.aggregate()
     .group({
       _id: "$_creator",
-      reputationScore: { $sum: "$meta.QoI" },
+      reputationScore: { $sum: "$meta.QoI" }
     })
     .lookup({
       from: "Users",
       localField: "_id",
       foreignField: "_id",
-      as: "user",
+      as: "user"
     })
     .project({
       _id: true,
       reputationScore: true,
-      user: { $arrayElemAt: ["$user", 0] },
+      user: { $arrayElemAt: ["$user", 0] }
     })
-    .then((data) => {
+    .then(data => {
       res.json(data);
     })
     .catch(next);

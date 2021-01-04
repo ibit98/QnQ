@@ -9,18 +9,18 @@ const ReviewsSchema = new Schema(
     _creator: {
       type: Schema.Types.ObjectId,
       ref: "Users",
-      required: [true, "The Creator field is required"],
+      required: [true, "The Creator field is required"]
     },
 
     // TODO: Change this location to map to actual location (maybe google maps)
     _location: {
       type: String,
-      required: [true, "The Location field is required"],
+      required: [true, "The Location field is required"]
     },
 
     title: {
       type: String,
-      required: [true, "The Review Title field is required"],
+      required: [true, "The Review Title field is required"]
     },
 
     text: String,
@@ -29,34 +29,34 @@ const ReviewsSchema = new Schema(
       beliefCount: {
         type: Number,
         min: 0,
-        default: 0,
+        default: 0
       },
       disbeliefCount: {
         type: Number,
         min: 0,
-        default: 0,
+        default: 0
       },
       uncertaintyCount: {
         type: Number,
         min: 0,
-        default: 0,
+        default: 0
       },
       QoI: {
         type: Number,
         default: calculate_QoI({
           beliefCount: 0,
           disbeliefCount: 0,
-          uncertaintyCount: 0,
-        }),
-      },
-    },
+          uncertaintyCount: 0
+        })
+      }
+    }
   },
   { emitIndexErrors: true }
 );
 
 ReviewsSchema.index({ _creator: 1, _location: 1 }, { unique: true });
 
-var handleE11000 = function (error, res, next) {
+var handleE11000 = function(error, res, next) {
   if (error.name === "MongoError" && error.code === 11000) {
     next(
       new Error(
