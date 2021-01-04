@@ -17,15 +17,15 @@ import {
 } from "@react-navigation/drawer";
 
 // import AboutScreen from '../content/AboutScreen';
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import styles from "../styles/navigation-styles";
+import HomeScreen from "../../screens/HomeScreen";
+import ProfileScreen from "../../screens/ProfileScreen";
+import styles from "../../styles/navigation-styles";
 
 const CustomDrawer = props => (
   <DrawerContentScrollView {...props} style={styles.drawer}>
     <SafeAreaView style={styles.drawerProfileView}>
       <Image
-        source={require("../assets/avatar-placeholder.jpg")}
+        source={require("../../assets/avatar-placeholder.jpg")}
         style={styles.drawerProfileImage}
       ></Image>
       <View style={styles.drawerProfileText}>
@@ -111,8 +111,6 @@ class QnQDrawer extends React.Component {
 // },
 // {
 //   contentOptions: {
-//     activeTintColor: 'red',
-//     inactiveTintColor :'black',
 //     activeBackgroundColor :'white'
 //   },
 // }

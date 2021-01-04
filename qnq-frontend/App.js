@@ -1,13 +1,15 @@
 import React from "react";
 
+import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 
-import QnQDrawer from "./app/config/navigation";
+import Stack from "./app/config/navigation/stack";
 
 export default function App() {
   return (
     <NavigationContainer>
-      <QnQDrawer />
+      <StatusBar style="dark" />
+      <Stack />
     </NavigationContainer>
   );
 }
