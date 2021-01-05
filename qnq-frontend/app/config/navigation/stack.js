@@ -3,26 +3,33 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Drawer from "./drawer";
-// import ModalHelp from '../screens/ModalHelp';
-// import ModalQRCode from '../screens/ModalQRCode';
-// import ModalTutorialBike from '../screens/ModalTutorialBike';
+import SignInScreen from "../../screens/SignInScreen";
+import SplashScreen from "../../screens/SplashScreen";
 
 const Stack = createStackNavigator();
 
-class QnQStack extends React.Component {
-  render() {
-    return (
-      <Stack.Navigator
-        initialRouteName="Drawer"
-        mode="modal"
-        screenOptions={({ route, navigation }) => ({
-          headerShown: false
-        })}
-      >
+export default function QnQStack(props) {
+  return (
+    <Stack.Navigator
+      mode="modal"
+      screenOptions={({ route, navigation }) => ({
+        headerShown: false
+      })}
+    >
+      {props.isLoading ? (
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      ) : props.userToken == null ? (
+        <Stack.Screen name="SignInScreen" component={SignInScreen} />
+      ) : (
         <Stack.Screen name="Drawer" component={Drawer} />
-      </Stack.Navigator>
-    );
-  }
-}
+      )}
+    </Stack.Navigator>
+  );
 
-export default QnQStack;
+  //   {/*            options={{
+  //                 title: 'Sign in',
+  //             // When logging out, a pop animation feels intuitive
+  //                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+  //               }}
+  // */}
+}

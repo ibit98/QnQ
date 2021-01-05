@@ -2,7 +2,8 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   drawer: {
-    backgroundColor: "black"
+    backgroundColor: "black",
+    width: 300
   },
   drawerProfileImage: {
     borderRadius: 50,
@@ -27,13 +28,13 @@ const styles = StyleSheet.create({
     height: 35,
     paddingLeft: 8
   },
-  drawermobno: {
+  drawerProfileRating: {
     color: "gray",
-    paddingLeft: 10
+    fontSize: 15,
+    paddingLeft: 8
   },
-  icon: {
-    width: 20,
-    height: 20
+  drawerLogoutItem: {
+    color: "white"
   }
 });
 
