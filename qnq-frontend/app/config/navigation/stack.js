@@ -19,17 +19,14 @@ export default function QnQStack(props) {
       {props.isLoading ? (
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
       ) : props.userToken == null ? (
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
+        <Stack.Screen
+          name="SignInScreen"
+          component={SignInScreen}
+          animationTypeForReplace={props.isSignout ? "pop" : "push"}
+        />
       ) : (
         <Stack.Screen name="Drawer" component={Drawer} />
       )}
     </Stack.Navigator>
   );
-
-  //   {/*            options={{
-  //                 title: 'Sign in',
-  //             // When logging out, a pop animation feels intuitive
-  //                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-  //               }}
-  // */}
 }

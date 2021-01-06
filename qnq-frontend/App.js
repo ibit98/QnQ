@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useReducer } from "react";
 
+import { Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 
 import Stack from "./app/config/navigation/stack";
 import { AuthContext } from "./app/contexts/AuthContext";
+import { API_URL, USER_TOKEN } from "./app/constants";
 
 const initialState = {
   isLoading: true,
+  isSignout: false,
   userToken: null
 };
 
@@ -46,16 +49,37 @@ export default function App() {
       let userToken;
 
       try {
-        userToken = await AsyncStorage.getItem("userToken");
+        userToken = await AsyncStorage.getItem(USER_TOKEN);
       } catch (e) {
         // TODO: Restoring token failed
       }
 
-      // TODO: After restoring token, we may need to validate it in production apps
+      fetch(API_URL + "users/me", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + userToken
+        }
+      })
+        .then(jsonResponse => jsonResponse.json())
+        .then(response => {
+          if (response.error) {
+            // jwt has expired or corrupt token
+            AsyncStorage.removeItem(USER_TOKEN).then(() => {
+              dispatch({ type: "RESTORE_TOKEN", token: null });
+            });
+            return;
+          }
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+          // Persist refreshed token in AsyncStorage and then dispatch SIGN_IN action
+          AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
+            dispatch({ type: "RESTORE_TOKEN", token: response.user.token });
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
     };
 
     bootstrapAsync();
@@ -64,14 +88,56 @@ export default function App() {
   const authContext = useMemo(
     () => ({
       signIn: async data => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
+        if (data.email.length < 1) {
+          // TODO: show alert in input boxes itself or login form addition
+          Alert.alert("Enter email!");
+          return;
+        }
+        if (data.password.length < 1) {
+          // TODO: show alert in input boxes itself or login form addition
+          Alert.alert("Enter password!");
+          return;
+        }
 
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+        fetch(API_URL + "users/login", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            user: {
+              email: data.email,
+              password: data.password
+            }
+          })
+        })
+          .then(jsonResponse => jsonResponse.json())
+          .then(response => {
+            if (response.errors) {
+              console.info(response.errors);
+              for (let key in response.errors) {
+                // TODO: show alert in input boxes itself or login form addition
+                Alert.alert(key + " " + response.errors[key]);
+              }
+              return;
+            }
+
+            // Persist token in AsyncStorage and then dispatch SIGN_IN action
+            AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
+              dispatch({ type: "SIGN_IN", token: response.user.token });
+            });
+          })
+          .catch(error => {
+            console.error(error);
+          });
       },
-      signOut: () => dispatch({ type: "SIGN_OUT" }),
+      signOut: () => {
+        // Remove token in AsyncStorage and then dispatch SIGN_OUT action
+        AsyncStorage.removeItem(USER_TOKEN).then(() => {
+          dispatch({ type: "SIGN_OUT" });
+        });
+      },
       signUp: async data => {
         // In a production app, we need to send user data to server and get a token
         // We will also need to handle errors if sign up failed
@@ -88,7 +154,11 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <StatusBar style="dark" />
-        <Stack isLoading={state.isLoading} userToken={state.userToken} />
+        <Stack
+          isLoading={state.isLoading}
+          isSignout={state.isSignout}
+          userToken={state.userToken}
+        />
       </NavigationContainer>
     </AuthContext.Provider>
   );
