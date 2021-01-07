@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useReducer } from "react";
 
 import { Alert } from "react-native";
+import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
@@ -150,15 +151,15 @@ export default function App() {
     []
   );
 
+  if (state.isLoading) {
+    return <AppLoading />;
+  }
+
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <StatusBar style="dark" />
-        <Stack
-          isLoading={state.isLoading}
-          isSignout={state.isSignout}
-          userToken={state.userToken}
-        />
+        <Stack isSignout={state.isSignout} userToken={state.userToken} />
       </NavigationContainer>
     </AuthContext.Provider>
   );

@@ -4,7 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import Drawer from "./drawer";
 import SignInScreen from "../../screens/SignInScreen";
-import SplashScreen from "../../screens/SplashScreen";
 
 const Stack = createStackNavigator();
 
@@ -16,9 +15,7 @@ export default function QnQStack(props) {
         headerShown: false
       })}
     >
-      {props.isLoading ? (
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-      ) : props.userToken == null ? (
+      {props.userToken == null ? (
         <Stack.Screen
           name="SignInScreen"
           component={SignInScreen}
