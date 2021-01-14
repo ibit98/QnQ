@@ -92,11 +92,16 @@ router.post("/login", Auth.optional, (req, res, next) => {
   )(req, res, next);
 });
 
-// GET currently logged in user (Auth required, only authenticated users have access)
-router.get("/me", Auth.required, (req, res, next) => {
+// GET currently logged in user, if any
+router.get("/me", Auth.optional, (req, res, next) => {
   console.log(
     chalk.inverse.blue("GET") + " : " + chalk.italic.cyan(currentRoute + "/me")
   );
+
+  if (!req.payload) {
+    // No JWT was given, first login from a device
+    return res.json({ error: "No JWT" });
+  }
 
   const {
     payload: { id }
@@ -106,6 +111,7 @@ router.get("/me", Auth.required, (req, res, next) => {
     if (!user) {
       return res.sendStatus(400);
     }
+    console.log();
 
     return res.json({ user: user.toAuthJSON() });
   });
