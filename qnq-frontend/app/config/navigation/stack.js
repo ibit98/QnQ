@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import Drawer from "./drawer";
 import SignInScreen from "../../screens/SignInScreen";
+import SignUpScreen from "../../screens/SignUpScreen";
 
 const Stack = createStackNavigator();
 
@@ -16,11 +17,14 @@ export default function QnQStack(props) {
       })}
     >
       {props.userToken == null ? (
-        <Stack.Screen
-          name="SignInScreen"
-          component={SignInScreen}
-          animationTypeForReplace={props.isSignout ? "pop" : "push"}
-        />
+        <>
+          <Stack.Screen
+            name="SignInScreen"
+            component={SignInScreen}
+            animationTypeForReplace={props.isSignout ? "pop" : "push"}
+          />
+          <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+        </>
       ) : (
         <Stack.Screen name="Drawer" component={Drawer} />
       )}

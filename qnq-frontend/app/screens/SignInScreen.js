@@ -16,7 +16,7 @@ import {
 import { AuthContext } from "../contexts/AuthContext";
 import styles from "../styles/login-styles";
 
-export default function SignInScreen() {
+export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,56 +60,17 @@ export default function SignInScreen() {
       <View style={styles.buttonView}>
         <Button
           style={styles.loginButton}
-          onPress={() => signIn({ email, password })}
-          title="Login"
+          onPress={() => signIn({ email: email, password: password })}
+          title="Sign In"
           color="#8f1106"
         />
-        {/*}<TouchableOpacity
-          onPress={() => this.register()}
-          style={{ marginTop: 20 }}
+        <TouchableOpacity
+          style={styles.registerButton}
+          onPress={() => navigation.navigate("SignUpScreen")}
         >
-          <Text>Sign Up</Text>
-        </TouchableOpacity>*/}
+          <Text style={styles.registerText}>Sign Up</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
-
-// class LoginScreen extends React.Component {
-// submitLoginForm() {
-//   const { email, pswd } = this.state;
-//   if (email == "") {
-//     Alert.alert("Error", "Email is mandatory");
-//   } else if (pswd == "") {
-//     Alert.alert("Error", "Please enter password");
-//   } else if (email != "arijitbiley@gmail.com" || pswd != "abc") {
-//     Alert.alert("Error", "Invalid credentials");
-//   } else {
-//     this.props.navigation.navigate("Drawer");
-//   }
-// }
-
-// register() {
-//   this.props.navigation.navigate("Signup");
-// }
-
-//   return (
-//
-//       <ImageBackground
-//         source={require("../images/background.png")}
-//         style={{ flex: 1, width: null, height: null }}
-//       >
-//         <Image
-//           source={require("../images/logo.png")}
-//           style={styles.logo}
-//         ></Image>
-//
-//
-//
-//
-//
-//
-//       </ImageBackground>
-//
-//   );
-// }

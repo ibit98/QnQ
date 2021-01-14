@@ -14,20 +14,28 @@ const styles = StyleSheet.create({
     padding: 20
   },
   inputView: {
-    backgroundColor: "white",
     borderRadius: 5,
+    backgroundColor: "white",
     width: "70%",
     height: 45,
-    marginBottom: 20
+    marginBottom: 20,
+    flexDirection: "row"
+  },
+  dividedInputView: {
+    backgroundColor: null
+  },
+  inputNameView: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    flex: 1,
+    borderWidth: 2
   },
   textInput: {
     height: 50,
     flex: 1,
     fontSize: 17,
     padding: 10
-  },
-  registerButton: { marginTop: 16, alignItems: "center" },
-  registerText: { color: "pink" }
+  }
 });
 
 export default styles;

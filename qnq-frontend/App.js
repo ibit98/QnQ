@@ -52,16 +52,25 @@ export default function App() {
       try {
         userToken = await AsyncStorage.getItem(USER_TOKEN);
       } catch (e) {
-        // TODO: Restoring token failed
+        // The token is not stored in Async storage, this is
+        // a first time login for this user, so we restore the
+        // token with null
+        dispatch({ type: "RESTORE_TOKEN", token: null });
+        return;
       }
 
       fetch(API_URL + "users/me", {
         method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + userToken
-        }
+        headers: userToken
+          ? {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + userToken
+            }
+          : {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
       })
         .then(jsonResponse => jsonResponse.json())
         .then(response => {
@@ -140,12 +149,38 @@ export default function App() {
         });
       },
       signUp: async data => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
+        fetch(API_URL + "users", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            user: {
+              name: data.name,
+              email: data.email,
+              password: data.password
+            }
+          })
+        })
+          .then(jsonResponse => jsonResponse.json())
+          .then(response => {
+            if (response.error) {
+              //TODO: change this alert to reflect in UI
+              Alert.alert(response.error);
+              return false;
+            }
 
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+            // Persist token in AsyncStorage and then dispatch SIGN_IN action
+            AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
+              dispatch({ type: "SIGN_IN", token: response.user.token });
+              return true;
+            });
+          })
+          .catch(error => {
+            console.error(error);
+          });
+        return false;
       }
     }),
     []
