@@ -73,7 +73,26 @@ export default function QnQDrawer() {
       drawerType="front"
       initialRouteName="Home"
     >
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerTitle: "",
+          headerStyle: {
+            position: "absolute",
+            backgroundColor: "transparent",
+            zIndex: 100,
+            top: 0,
+            left: 0,
+            right: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0
+          }
+        }}
+      />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
