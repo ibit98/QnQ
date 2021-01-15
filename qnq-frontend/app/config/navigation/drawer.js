@@ -20,6 +20,7 @@ import {
 } from "@react-navigation/drawer";
 
 import { AuthContext } from "../../contexts/AuthContext";
+import { UserContext } from "../../contexts/UserContext";
 import HomeScreen from "../../screens/HomeScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import styles from "../../styles/navigation-styles";
@@ -34,7 +35,7 @@ const CustomDrawer = props => {
             style={styles.drawerProfileImage}
           ></Image>
           <View style={styles.drawerProfileText}>
-            <Text style={styles.drawerProfileName}>User Name</Text>
+            <Text style={styles.drawerProfileName}>{props.user.name}</Text>
             <Text style={styles.drawerProfileRating}>rating</Text>
           </View>
         </SafeAreaView>
@@ -59,6 +60,7 @@ const Drawer = createDrawerNavigator();
 
 export default function QnQDrawer() {
   const { signOut } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
 
   return (
     <Drawer.Navigator
@@ -66,7 +68,8 @@ export default function QnQDrawer() {
       drawerContentOptions={{
         activeTintColor: "#eb233a",
         inactiveTintColor: "#eb233a",
-        signOutHandler: signOut
+        signOutHandler: signOut,
+        user: user
       }}
       drawerPosition="left"
       drawerStyle={styles.drawer}

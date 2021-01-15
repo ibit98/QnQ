@@ -8,11 +8,13 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import Stack from "./app/config/navigation/stack";
 import { AuthContext } from "./app/contexts/AuthContext";
+import { UserContext } from "./app/contexts/UserContext";
 import { API_URL, USER_TOKEN } from "./app/constants";
 
 const initialState = {
   isLoading: true,
   isSignout: false,
+  user: null,
   userToken: null
 };
 
@@ -21,19 +23,22 @@ function reducer(prevState, action) {
     case "RESTORE_TOKEN":
       return {
         ...prevState,
-        userToken: action.token,
-        isLoading: false
+        isLoading: false,
+        user: action.data.user,
+        userToken: action.data.token
       };
     case "SIGN_IN":
       return {
         ...prevState,
         isSignout: false,
-        userToken: action.token
+        user: action.data.user,
+        userToken: action.data.token
       };
     case "SIGN_OUT":
       return {
         ...prevState,
         isSignout: true,
+        user: null,
         userToken: null
       };
     default:
@@ -55,7 +60,7 @@ export default function App() {
         // The token is not stored in Async storage, this is
         // a first time login for this user, so we restore the
         // token with null
-        dispatch({ type: "RESTORE_TOKEN", token: null });
+        dispatch({ type: "RESTORE_TOKEN", data: { token: null, user: null } });
         return;
       }
 
@@ -77,14 +82,20 @@ export default function App() {
           if (response.error) {
             // jwt has expired or corrupt token
             AsyncStorage.removeItem(USER_TOKEN).then(() => {
-              dispatch({ type: "RESTORE_TOKEN", token: null });
+              dispatch({
+                type: "RESTORE_TOKEN",
+                data: { token: null, user: null }
+              });
             });
             return;
           }
 
           // Persist refreshed token in AsyncStorage and then dispatch SIGN_IN action
           AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
-            dispatch({ type: "RESTORE_TOKEN", token: response.user.token });
+            dispatch({
+              type: "RESTORE_TOKEN",
+              data: { token: response.user.token, user: response.user }
+            });
           });
         })
         .catch(error => {
@@ -95,7 +106,7 @@ export default function App() {
     bootstrapAsync();
   }, []);
 
-  const authContext = useMemo(
+  const authContextValue = useMemo(
     () => ({
       signIn: async data => {
         if (data.email.length < 1) {
@@ -135,7 +146,10 @@ export default function App() {
 
             // Persist token in AsyncStorage and then dispatch SIGN_IN action
             AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
-              dispatch({ type: "SIGN_IN", token: response.user.token });
+              dispatch({
+                type: "SIGN_IN",
+                data: { token: response.user.token, user: response.user }
+              });
             });
           })
           .catch(error => {
@@ -173,7 +187,10 @@ export default function App() {
 
             // Persist token in AsyncStorage and then dispatch SIGN_IN action
             AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
-              dispatch({ type: "SIGN_IN", token: response.user.token });
+              dispatch({
+                type: "SIGN_IN",
+                data: { token: response.user.token, user: response.user }
+              });
               return true;
             });
           })
@@ -185,17 +202,22 @@ export default function App() {
     }),
     []
   );
+  const userContextValue = {
+    user: state.user
+  };
 
   if (state.isLoading) {
     return <AppLoading />;
   }
 
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <StatusBar style="dark" />
-        <Stack isSignout={state.isSignout} userToken={state.userToken} />
-      </NavigationContainer>
+    <AuthContext.Provider value={authContextValue}>
+      <UserContext.Provider value={userContextValue}>
+        <NavigationContainer>
+          <StatusBar style="dark" />
+          <Stack isSignout={state.isSignout} userToken={state.userToken} />
+        </NavigationContainer>
+      </UserContext.Provider>
     </AuthContext.Provider>
   );
 }
