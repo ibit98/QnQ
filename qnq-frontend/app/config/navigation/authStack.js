@@ -8,7 +8,7 @@ import SignUpScreen from "../../screens/SignUpScreen";
 
 const Stack = createStackNavigator();
 
-export default function QnQStack(props) {
+export default function authStack(props) {
   return (
     <Stack.Navigator
       mode="modal"

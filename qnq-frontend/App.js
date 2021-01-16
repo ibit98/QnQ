@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 
-import Stack from "./app/config/navigation/stack";
+import Stack from "./app/config/navigation/authStack";
 import { AuthContext } from "./app/contexts/AuthContext";
 import { UserContext } from "./app/contexts/UserContext";
 import { API_URL, USER_TOKEN } from "./app/constants";
