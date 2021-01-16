@@ -16,32 +16,32 @@ import { useNavigation } from "@react-navigation/native";
 // TODO: DATA, Item, renderItem, styles are placeholders for now till map integration is done
 const DATA = [
   {
-    id: "loc1",
+    id: "1",
     title: "Haldirams"
   },
   {
-    id: "loc2",
+    id: "2",
     title: "Bhojohori Manna"
   },
   {
-    id: "loc3",
+    id: "3",
     title: "6, Ballygunge Place"
   }
 ];
-function Item({ title }) {
+function Item({ id, title }) {
   const navigation = useNavigation();
 
   return (
     <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
       <Button
-        title={`Go to Some page`}
-        onPress={() => navigation.navigate("Location")}
+        title={"Read Reviews"}
+        onPress={() => navigation.navigate("Location", { loc_id: id })}
       />
     </View>
   );
 }
-const renderItem = ({ item }) => <Item title={item.title} />;
+const renderItem = ({ item }) => <Item title={item.title} id={item.id} />;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

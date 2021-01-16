@@ -6,17 +6,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import HomeScreen from "../../screens/HomeScreen";
 import LocationScreen from "../../screens/LocationScreen";
+import ReviewScreen from "../../screens/ReviewScreen";
 
 const Stack = createStackNavigator();
 
 export default function HomeStack({ navigation }) {
   return (
-    <Stack.Navigator
-      mode="modal"
-      screenOptions={() => ({
-        headerShown: false
-      })}
-    >
+    <Stack.Navigator mode="modal">
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -34,7 +30,25 @@ export default function HomeStack({ navigation }) {
           )
         }}
       />
-      <Stack.Screen name="Location" component={LocationScreen} />
+      <Stack.Screen
+        name="Location"
+        component={LocationScreen}
+        options={({ route }) => ({
+          headerShown: true,
+          title: `<insert name [loc_id: ${route.params.loc_id}]>` // TODO
+        })}
+      />
+      <Stack.Screen
+        name="Review"
+        component={ReviewScreen}
+        options={({ route }) => ({
+          headerShown: true,
+          headerStyle: {
+            elevation: 0
+          },
+          title: route.params.review.title
+        })}
+      />
     </Stack.Navigator>
   );
 }
