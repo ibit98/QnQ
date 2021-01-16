@@ -26,6 +26,7 @@ router.get("/", (req, res, next) => {
   Reviews.find({})
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
+    .populate("_creator", "_id name")
     .then(data => {
       res.json(data);
     })
