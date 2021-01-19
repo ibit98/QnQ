@@ -35,7 +35,7 @@ export default function HomeStack({ navigation }) {
         component={LocationScreen}
         options={({ route }) => ({
           headerShown: true,
-          title: `<insert name [loc_id: ${route.params.loc_id}]>` // TODO
+          title: `${route.params.place.name}`
         })}
       />
       <Stack.Screen
