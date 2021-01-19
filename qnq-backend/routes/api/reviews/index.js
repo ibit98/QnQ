@@ -13,17 +13,45 @@ router.get("/", (req, res, next) => {
   const resPerPage = 25;
   const page = parseInt(req.query.page) || 1;
 
+  if (page < 1) {
+    console.log("Non-positive Page Number. Changing to page 1.");
+    page = 1;
+  }
+
   console.log(
     chalk.inverse.blue("GET") +
       "   : " +
       chalk.italic.cyan(currentRoute + "?page=" + page)
   );
 
+  Reviews.find({})
+    .skip(resPerPage * (page - 1))
+    .limit(resPerPage)
+    .populate("_creator", "_id name")
+    .then(data => {
+      res.json(data);
+    })
+    .catch(next);
+});
+
+// Get Paginated Details of all Reviews of a location
+router.get("/location/:placeId", (req, res, next) => {
+  const resPerPage = 25;
+  const page = parseInt(req.query.page) || 1;
+  const placeId = req.params.placeId;
+
   if (page < 1) {
-    throw Error("Non-positive Page Number");
+    console.log("Non-positive Page Number. Changing to page 1.");
+    page = 1;
   }
 
-  Reviews.find({})
+  console.log(
+    chalk.inverse.blue("GET") +
+      "   : " +
+      chalk.italic.cyan(currentRoute + `/location/${placeId}?page=${page}`)
+  );
+
+  Reviews.find({ _location: placeId })
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
     .populate("_creator", "_id name")
