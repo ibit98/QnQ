@@ -18,10 +18,12 @@ export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);
   const [reviewsPage, setReviewsPage] = useState(1);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
-  const { loc_id } = route.params;
+  const {
+    place: { id }
+  } = route.params;
 
   const loadReviewsAsync = async () => {
-    fetch(API_URL + `reviews?page=${reviewsPage}`, {
+    fetch(API_URL + `reviews/location/${id}?page=${reviewsPage}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -57,6 +59,8 @@ export default function LocationScreen({ route, navigation }) {
         <Text style={styles.reviewsHeader}>Reviews</Text>
         {isLoadingReviews ? (
           <ActivityIndicator size="large" color="lightgray" />
+        ) : reviews.length == 0 ? (
+          <Text style={styles.noReviewsBanner}>No reviews yet</Text>
         ) : (
           <FlatList
             data={reviews}

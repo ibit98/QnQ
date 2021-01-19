@@ -7,6 +7,10 @@ const styles = StyleSheet.create({
   reviewsHeader: {
     fontSize: 20,
     padding: 13
+  },
+  noReviewsBanner: {
+    textAlign: "center",
+    color: "gray"
   }
 });
 
