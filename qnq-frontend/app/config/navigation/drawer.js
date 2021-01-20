@@ -9,22 +9,23 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerView,
   DrawerItem,
   DrawerItemList,
-  createDrawerNavigator
+  createDrawerNavigator,
 } from "@react-navigation/drawer";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import HomeScreen from "../../screens/HomeScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
+import EditProfileScreen from "../../screens/EditProfileScreen";
 import styles from "../../styles/navigation-styles";
 
-const CustomDrawer = props => {
+const CustomDrawer = (props) => {
   return (
     <React.Fragment>
       <DrawerContentScrollView {...props}>
@@ -43,7 +44,7 @@ const CustomDrawer = props => {
       <View
         style={{
           borderBottomColor: "gray",
-          borderBottomWidth: 0.2
+          borderBottomWidth: 0.2,
         }}
       />
       <DrawerItem
@@ -66,7 +67,7 @@ export default function QnQDrawer() {
       drawerContentOptions={{
         activeTintColor: "#eb233a",
         inactiveTintColor: "#eb233a",
-        signOutHandler: signOut
+        signOutHandler: signOut,
       }}
       drawerPosition="left"
       drawerStyle={styles.drawer}
@@ -75,6 +76,7 @@ export default function QnQDrawer() {
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen name="Edit" component={EditProfileScreen} />
     </Drawer.Navigator>
   );
 }
