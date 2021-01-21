@@ -33,33 +33,12 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.Outer}>
-      {/*<View style={[styles.userInfo, { flexDirection: "row" }]}>
-        <Avatar.Image
-          size={100}
-          source={require("../assets/male_avatar.png")}
-        />
-        <View style={{ padding: 20 }}>
-          <Title style={{ fontWeight: "800", fontSize: 25 }}>User Name</Title>
-          <Caption style={{ fontWeight: "400", fontSize: 17 }}>
-            @USer-ID
-          </Caption>
-        </View>
-      </View>
-      <View style={[styles.userInfo, { flexDirection: "column" }]}>
-        <View style={styles.row}>
-          <Icon name="map-marker-radius" size={26} color="#bbbbbb" />
-          <Text style={styles.rowText}>Location, Country</Text>
-        </View>
-        <View style={styles.row}>
-          <Icon name="phone" size={26} color="#bbbbbb" />
-          <Text style={styles.rowText}>+919614593044</Text>
-        </View>
-        <View style={styles.row}>
-          <Icon name="email" size={26} color="#bbbbbb" />
-          <Text style={styles.rowText}>sougata@gmail.com</Text>
-        </View>
-  </View>*/}
-      <View style={{ marginTop: 30, flexDirection: "row" }}>
+      <View
+        style={{
+          marginTop: 30,
+          flexDirection: "row",
+        }}
+      >
         <View
           style={[
             styles.userInfo,
