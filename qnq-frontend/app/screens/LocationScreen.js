@@ -5,8 +5,10 @@ import {
   ActivityIndicator,
   Button,
   FlatList,
+  Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from "react-native";
 
@@ -55,6 +57,24 @@ export default function LocationScreen({ route, navigation }) {
 
   return (
     <View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("CreateReview", {
+            place: route.params.place
+          })
+        }
+      >
+        <View style={styles.myReviewContainer}>
+          <Image
+            source={require("../assets/avatar-placeholder.jpg")}
+            style={styles.myImage}
+          ></Image>
+          <Text style={styles.myReviewBannerPrimary}>Review this location</Text>
+          <Text style={styles.myReviewBannerSecondary}>
+            Share your thoughts on this place's hygiene to help others be safe
+          </Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsHeader}>Reviews</Text>
         {isLoadingReviews ? (

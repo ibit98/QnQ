@@ -12,7 +12,6 @@ const ReviewsSchema = new Schema(
       required: [true, "The Creator field is required"]
     },
 
-    // TODO: Change this location to map to actual location (maybe google maps)
     _location: {
       type: String,
       required: [true, "The Location field is required"]

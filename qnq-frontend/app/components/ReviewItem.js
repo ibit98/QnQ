@@ -163,11 +163,12 @@ export default function ReviewItem({ review }) {
           return;
         }
 
-        // Update with received meta
-        dispatch({
-          type: "UPDATE_META",
-          data: { meta: response.updatedMeta }
-        });
+        // TODO: Update with received meta required? Gives way to errors.
+        // Find a better way to do this
+        // dispatch({
+        //   type: "UPDATE_META",
+        //   data: { meta: response.updatedMeta }
+        // });
       })
       .catch(error => {
         console.error(error);

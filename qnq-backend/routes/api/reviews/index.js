@@ -98,14 +98,25 @@ router.get("/:id/my-rating", Auth.required, (req, res, next) => {
     .catch(next);
 });
 
-// Post a new review
-router.post("/", Auth.required, (req, res, next) => {
+// Post a new review/ Update an old review
+router.post("/location/:placeId", Auth.required, (req, res, next) => {
+  const placeId = req.params.placeId;
   console.log(
-    chalk.inverse.green("POST") + " : " + chalk.italic.cyan("/api/reviews")
+    chalk.inverse.green("POST") +
+      " : " +
+      chalk.italic.cyan(`${currentRoute}/location/${placeId}`)
   );
 
-  if (req.body.title) {
-    Reviews.create(req.body)
+  const { title, text, creator } = req.body;
+
+  // TODO: clear all ratings with this review ID, and also change meta to (0, 0, 0).
+  if (title) {
+    Reviews.findOneAndUpdate(
+      { _creator: creator, _location: placeId },
+      { title: title, text: text },
+      { new: true, upsert: true }
+    )
+      .populate("_creator", "_id name")
       .then(data => res.json(data))
       .catch(next);
   } else {

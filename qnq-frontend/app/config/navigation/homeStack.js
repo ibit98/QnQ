@@ -7,6 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../../screens/HomeScreen";
 import LocationScreen from "../../screens/LocationScreen";
 import ReviewScreen from "../../screens/ReviewScreen";
+import CreateReviewScreen from "../../screens/CreateReviewScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,14 @@ export default function HomeStack({ navigation }) {
             elevation: 0
           },
           title: route.params.review.title
+        })}
+      />
+      <Stack.Screen
+        name="CreateReview"
+        component={CreateReviewScreen}
+        options={({ route }) => ({
+          headerShown: true,
+          title: `${route.params.place.name}`
         })}
       />
     </Stack.Navigator>
