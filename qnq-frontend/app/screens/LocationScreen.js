@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
-import { StatusBar, setStatusBarStyle } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
   Button,
   FlatList,
+  Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from "react-native";
+import { useIsDrawerOpen } from "@react-navigation/drawer";
+import { useFocusEffect } from "@react-navigation/native";
 
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
-import { API_URL, USER_TOKEN } from "../constants";
+import { API_URL } from "../constants";
 
 export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);
@@ -21,6 +25,7 @@ export default function LocationScreen({ route, navigation }) {
   const {
     place: { id }
   } = route.params;
+  const isDrawerOpen = useIsDrawerOpen();
 
   const loadReviewsAsync = async () => {
     fetch(API_URL + `reviews/location/${id}?page=${reviewsPage}`, {
@@ -47,14 +52,43 @@ export default function LocationScreen({ route, navigation }) {
   const appendReviews = newReviews => {
     setReviews([...reviews, ...newReviews]);
   };
-  const renderReview = ({ item }) => <ReviewItem review={item} />;
+  const renderReview = ({ item }) => (
+    <ReviewItem review={item} standalone={false} />
+  );
 
-  useEffect(() => {
-    loadReviewsAsync();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadReviewsAsync();
+      return () => {
+        setReviews([]);
+        setIsLoadingReviews(true);
+        setReviewsPage(1);
+      };
+    }, [navigation])
+  );
 
   return (
     <View>
+      <StatusBar style={isDrawerOpen ? "light" : "dark"} />
+
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("CreateReview", {
+            place: route.params.place
+          })
+        }
+      >
+        <View style={styles.myReviewContainer}>
+          <Image
+            source={require("../assets/avatar-placeholder.jpg")}
+            style={styles.myImage}
+          ></Image>
+          <Text style={styles.myReviewBannerPrimary}>Review this location</Text>
+          <Text style={styles.myReviewBannerSecondary}>
+            Share your thoughts on this place's hygiene to help others be safe
+          </Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsHeader}>Reviews</Text>
         {isLoadingReviews ? (

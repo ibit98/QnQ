@@ -95,7 +95,9 @@ router.post("/login", Auth.optional, (req, res, next) => {
 // GET currently logged in user, if any
 router.get("/me", Auth.optional, (req, res, next) => {
   console.log(
-    chalk.inverse.blue("GET") + " : " + chalk.italic.cyan(currentRoute + "/me")
+    chalk.inverse.blue("GET") +
+      "   : " +
+      chalk.italic.cyan(`${currentRoute}/me`)
   );
 
   if (!req.payload) {
@@ -111,7 +113,6 @@ router.get("/me", Auth.optional, (req, res, next) => {
     if (!user) {
       return res.sendStatus(400);
     }
-    console.log();
 
     return res.json({ user: user.toAuthJSON() });
   });
