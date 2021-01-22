@@ -9,40 +9,24 @@ import {
   View,
   SafeAreaView,
   Image,
-  Alert,
+  Alert
 } from "react-native";
 import { Avatar, Title, Caption, TouchableRipple } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function ProfileScreen({ navigation }) {
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerOpen", (e) => {
-      setStatusBarStyle("light");
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerClose", (e) => {
-      setStatusBarStyle("dark");
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
   return (
     <SafeAreaView style={styles.Outer}>
       <View
         style={{
           marginTop: 30,
-          flexDirection: "row",
+          flexDirection: "row"
         }}
       >
         <View
           style={[
             styles.userInfo,
-            { width: "50%", flexDirection: "column", marginLeft: 16 },
+            { width: "50%", flexDirection: "column", marginLeft: 16 }
           ]}
         >
           <Avatar.Image
@@ -75,7 +59,7 @@ export default function ProfileScreen({ navigation }) {
         <View
           style={[
             styles.ratingInfobox,
-            { borderRightColor: "#dddddd", borderRightWidth: 0.7 },
+            { borderRightColor: "#dddddd", borderRightWidth: 0.7 }
           ]}
         >
           <Title>120</Title>
@@ -84,7 +68,7 @@ export default function ProfileScreen({ navigation }) {
         <View
           style={[
             styles.ratingInfobox,
-            { borderRightColor: "#dddddd", borderRightWidth: 0.7 },
+            { borderRightColor: "#dddddd", borderRightWidth: 0.7 }
           ]}
         >
           <Title>65</Title>
@@ -133,11 +117,11 @@ export default function ProfileScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   Outer: {
-    flex: 1,
+    flex: 1
   },
   userInfo: {
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 20
   },
   ratingInfo: {
     marginBottom: 10,
@@ -147,26 +131,26 @@ const styles = StyleSheet.create({
     borderTopColor: "#cccccc",
     borderTopWidth: 1,
     height: 90,
-    flexDirection: "row",
+    flexDirection: "row"
   },
   ratingInfobox: {
     alignItems: "center",
     justifyContent: "center",
-    width: "33%",
+    width: "33%"
   },
   row: {
     flexDirection: "row",
-    marginBottom: 15,
+    marginBottom: 15
   },
   rowText: {
     color: "black",
     fontWeight: "600",
     fontSize: 16,
-    marginLeft: 10,
+    marginLeft: 10
   },
   menuItem: {
     flexDirection: "row",
     paddingVertical: 15,
-    paddingHorizontal: 30,
-  },
+    paddingHorizontal: 30
+  }
 });

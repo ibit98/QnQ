@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Button } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { createStackNavigator } from "@react-navigation/stack";
 

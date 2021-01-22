@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, setStatusBarStyle } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
   Button,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { useIsDrawerOpen } from "@react-navigation/drawer";
 
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
@@ -23,6 +24,7 @@ export default function LocationScreen({ route, navigation }) {
   const {
     place: { id }
   } = route.params;
+  const isDrawerOpen = useIsDrawerOpen();
 
   const loadReviewsAsync = async () => {
     fetch(API_URL + `reviews/location/${id}?page=${reviewsPage}`, {
@@ -57,6 +59,8 @@ export default function LocationScreen({ route, navigation }) {
 
   return (
     <View>
+      <StatusBar style={isDrawerOpen ? "light" : "dark"} />
+
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("CreateReview", {

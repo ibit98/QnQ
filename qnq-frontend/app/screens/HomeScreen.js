@@ -15,6 +15,7 @@ import {
 import MapView from "react-native-maps";
 import Icon from "react-native-vector-icons/Octicons";
 import { useNavigation } from "@react-navigation/native";
+import { useIsDrawerOpen } from "@react-navigation/drawer";
 
 export default function HomeScreen({ navigation }) {
   const [region, setRegion] = useState(null);
@@ -24,6 +25,7 @@ export default function HomeScreen({ navigation }) {
   // For loading the mylocation button from the get go,
   // together with onMapReady function.
   const [mapHeight, setMapHeight] = useState("99%");
+  const isOpen = useIsDrawerOpen();
 
   const handlePoiClick = ({
     nativeEvent: { coordinate, position, placeId, name }
@@ -57,7 +59,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style={isOpen ? "light" : "dark"} />
       {locationPermissionGranted ? (
         <MapView
           loadingEnabled={true}

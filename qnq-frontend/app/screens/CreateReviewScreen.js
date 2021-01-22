@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { StatusBar, setStatusBarStyle } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import {
   Alert,
   Button,
@@ -12,6 +12,7 @@ import {
   TextInput,
   View
 } from "react-native";
+import { useIsDrawerOpen } from "@react-navigation/drawer";
 import { StackActions } from "@react-navigation/native";
 
 import { API_URL } from "../constants";
@@ -23,6 +24,7 @@ export default function LocationScreen({ route, navigation }) {
   const [reviewText, setReviewText] = useState("");
   const { place } = route.params;
   const { user } = useContext(UserContext);
+  const isDrawerOpen = useIsDrawerOpen();
 
   const postReview = async () => {
     if (isPosting) return;
@@ -67,6 +69,8 @@ export default function LocationScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.createReviewContainer}>
+      <StatusBar style={isDrawerOpen ? "light" : "dark"} />
+
       <ScrollView style={styles.createReviewScrollView}>
         <TextInput
           autoFocus={true}
