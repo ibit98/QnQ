@@ -113,7 +113,6 @@ router.get("/me", Auth.optional, (req, res, next) => {
     if (!user) {
       return res.sendStatus(400);
     }
-    console.log();
 
     return res.json({ user: user.toAuthJSON() });
   });

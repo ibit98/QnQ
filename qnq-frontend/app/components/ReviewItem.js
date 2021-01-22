@@ -20,8 +20,9 @@ import { UserContext } from "../contexts/UserContext";
 import HelpfulRater from "./HelpfulRater";
 import HarmfulRater from "./HarmfulRater";
 import UncertainRater from "./UncertainRater";
+import standaloneStyles from "../styles/review-styles";
 
-export default function ReviewItem({ review }) {
+export default function ReviewItem({ review, standalone }) {
   const { user } = useContext(UserContext);
   const { title, text } = review;
   const initialState = {
@@ -216,40 +217,89 @@ export default function ReviewItem({ review }) {
     checkIfCurrentUserHasRated();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.reviewerView}>
-        <Image
-          source={require("../assets/avatar-placeholder.jpg")}
-          style={styles.reviewerImage}
-        ></Image>
-        <View style={styles.reviewerText}>
-          <Text style={styles.reviewerName}>{review._creator.name}</Text>
-          <Text style={styles.reviewerRating}>Rating</Text>
+  if (!standalone) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.reviewerView}>
+          <Image
+            source={require("../assets/avatar-placeholder.jpg")}
+            style={styles.reviewerImage}
+          ></Image>
+          <View style={styles.reviewerText}>
+            <Text style={styles.reviewerName}>{review._creator.name}</Text>
+            <Text style={styles.reviewerRating}>Rating</Text>
+          </View>
+        </View>
+        <TouchableHighlight
+          activeOpacity={0.6}
+          underlayColor="white"
+          onPress={() => navigation.navigate("Review", { review: review })}
+        >
+          <View style={styles.reviewContentView}>
+            <Text
+              ellipsizeMode={"tail"}
+              numberOfLines={1}
+              style={styles.reviewTitle}
+            >
+              {title}
+            </Text>
+            <Text
+              ellipsizeMode={"tail"}
+              numberOfLines={3}
+              style={styles.reviewText}
+            >
+              {text}
+            </Text>
+          </View>
+        </TouchableHighlight>
+        <View style={styles.ratingView}>
+          <HelpfulRater
+            count={meta.beliefCount}
+            active={rating == "helpful"}
+            onPressHandler={
+              rating == "helpful"
+                ? () => setNoRating(review._id, dispatch)
+                : () => setHelpful(review._id, dispatch)
+            }
+          />
+          <UncertainRater
+            count={meta.uncertaintyCount}
+            active={rating == "uncertain"}
+            onPressHandler={
+              rating == "uncertain"
+                ? () => setNoRating(review._id, dispatch)
+                : () => setUncertain(review._id, dispatch)
+            }
+          />
+          <HarmfulRater
+            count={meta.disbeliefCount}
+            active={rating == "harmful"}
+            onPressHandler={
+              rating == "harmful"
+                ? () => setNoRating(review._id, dispatch)
+                : () => setHarmful(review._id, dispatch)
+            }
+          />
         </View>
       </View>
-      <TouchableHighlight
-        activeOpacity={0.6}
-        underlayColor="white"
-        onPress={() => navigation.navigate("Review", { review: review })}
-      >
-        <View style={styles.reviewContentView}>
-          <Text
-            ellipsizeMode={"tail"}
-            numberOfLines={1}
-            style={styles.reviewTitle}
-          >
-            {title}
+    );
+  }
+
+  return (
+    <>
+      <View style={standaloneStyles.reviewerView}>
+        <Image
+          source={require("../assets/avatar-placeholder.jpg")}
+          style={standaloneStyles.reviewerImage}
+        ></Image>
+        <View style={standaloneStyles.reviewerText}>
+          <Text style={standaloneStyles.reviewerName}>
+            {review._creator.name}
           </Text>
-          <Text
-            ellipsizeMode={"tail"}
-            numberOfLines={3}
-            style={styles.reviewText}
-          >
-            {text}
-          </Text>
+          <Text style={standaloneStyles.reviewerRating}>Rating</Text>
         </View>
-      </TouchableHighlight>
+      </View>
+      <Text style={standaloneStyles.reviewText}>{review.text}</Text>
       <View style={styles.ratingView}>
         <HelpfulRater
           count={meta.beliefCount}
@@ -279,7 +329,7 @@ export default function ReviewItem({ review }) {
           }
         />
       </View>
-    </View>
+    </>
   );
 }
 

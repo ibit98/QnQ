@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import { StatusBar } from "expo-status-bar";
 import {
@@ -12,6 +12,7 @@ import {
   View
 } from "react-native";
 import { useIsDrawerOpen } from "@react-navigation/drawer";
+import { useFocusEffect } from "@react-navigation/native";
 
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
@@ -51,11 +52,20 @@ export default function LocationScreen({ route, navigation }) {
   const appendReviews = newReviews => {
     setReviews([...reviews, ...newReviews]);
   };
-  const renderReview = ({ item }) => <ReviewItem review={item} />;
+  const renderReview = ({ item }) => (
+    <ReviewItem review={item} standalone={false} />
+  );
 
-  useEffect(() => {
-    loadReviewsAsync();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadReviewsAsync();
+      return () => {
+        setReviews([]);
+        setIsLoadingReviews(true);
+        setReviewsPage(1);
+      };
+    }, [navigation])
+  );
 
   return (
     <View>

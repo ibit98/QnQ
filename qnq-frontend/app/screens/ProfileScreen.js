@@ -64,11 +64,11 @@ export default function ProfileScreen({ navigation }) {
           {/*<View style={styles.row}>
             <Icon name="map-marker-radius" size={26} color="#bbbbbb" />
             <Text style={styles.rowText}>Location, Country</Text>
-          </View>
+          </View>*/}
           <View style={styles.row}>
             <Icon name="phone" size={26} color="#bbbbbb" />
-            <Text style={styles.rowText}>+919614593044</Text>
-          </View>*/}
+            <Text style={styles.rowText}>+918549707785</Text>
+          </View>
           <View style={styles.row}>
             <Icon name="email" size={26} color="#bbbbbb" />
             <Text style={styles.rowText}>{user.email}</Text>
