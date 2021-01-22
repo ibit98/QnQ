@@ -62,6 +62,27 @@ router.get("/location/:placeId", (req, res, next) => {
     .catch(next);
 });
 
+// Get Count of all Reviews written by currently logged in user
+router.get("/me/count", Auth.required, (req, res, next) => {
+  const placeId = req.params.placeId;
+
+  console.log(
+    chalk.inverse.blue("GET") +
+      "   : " +
+      chalk.italic.cyan(currentRoute + "/me/count")
+  );
+
+  const {
+    payload: { id }
+  } = req;
+
+  Reviews.count({ _creator: id })
+    .then(data => {
+      res.json(data);
+    })
+    .catch(next);
+});
+
 // Get Details of a single Review
 router.get("/:id", (req, res, next) => {
   console.log(

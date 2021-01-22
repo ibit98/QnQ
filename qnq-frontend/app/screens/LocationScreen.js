@@ -15,7 +15,7 @@ import { useIsDrawerOpen } from "@react-navigation/drawer";
 
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
-import { API_URL, USER_TOKEN } from "../constants";
+import { API_URL } from "../constants";
 
 export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);

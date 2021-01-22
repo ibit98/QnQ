@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 
 import { StatusBar, setStatusBarStyle } from "expo-status-bar";
 import {
   Button,
-  PanResponder,
   StyleSheet,
   Text,
   View,
@@ -17,57 +16,34 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 
+import { UserContext } from "../contexts/UserContext";
+
 export default function EditProfileScreen({ navigation }) {
+  const { user } = useContext(UserContext);
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.topPanel}>
-        <Icon.Button
-          name="arrow-left"
-          size={27}
-          color="#000111"
-          backgroundColor="#bbbbbb"
-          onPress={() => navigation.navigate("Profile")}
-          style={{ marginTop: 30 }}
-        />
-        <Text
-          style={{
-            marginLeft: "21%",
-            marginTop: 35,
-            color: "#ffffff",
-            fontSize: 27
-          }}
-        >
-          Edit Profile
-        </Text>
-      </View>
+    <SafeAreaView style={styles.outer}>
       <View style={styles.imagePicker}>
         <TouchableOpacity style={styles.touchImage}>
           <Avatar.Image
-            size={120}
+            size={100}
             source={require("../assets/male_avatar.png")}
           >
-            <Icon name="camera-plus" size={200} color="#000011" />
+            <Icon name="camera-plus" size={50} color="#000011" />
           </Avatar.Image>
         </TouchableOpacity>
-        <Title>User Name</Title>
       </View>
       <View style={styles.formWrapper}>
         <View style={styles.action}>
           <FontAwesome name="user-o" color="#111111" size={20} />
           <TextInput
-            placeholder="First Name"
+            placeholder="Name"
             placeholderTextColor="#666666"
             autoCorrect={false}
             style={styles.textInput}
-          />
-        </View>
-        <View style={styles.action}>
-          <FontAwesome name="user-o" color="#111111" size={20} />
-          <TextInput
-            placeholder="Last Name"
-            placeholderTextColor="#666666"
-            autoCorrect={false}
-            style={styles.textInput}
+            defaultValue={name}
           />
         </View>
         <View style={styles.action}>
@@ -88,6 +64,7 @@ export default function EditProfileScreen({ navigation }) {
             keyboardType="email-address"
             autoCorrect={false}
             style={styles.textInput}
+            defaultValue={email}
           />
         </View>
         <View style={styles.action}>
@@ -109,7 +86,7 @@ export default function EditProfileScreen({ navigation }) {
           />
         </View>
         <TouchableOpacity style={styles.commandButton} onPress={() => {}}>
-          <Text style={styles.panelButtonTitle}>Submit</Text>
+          <Text style={styles.panelButtonTitle}>Save</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -117,19 +94,12 @@ export default function EditProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  Outer: {
+  outer: {
     flex: 1
   },
-  topPanel: {
-    height: 80,
-    flexDirection: "row",
-    backgroundColor: "#bbbbbb",
-    marginBottom: 25
-  },
   imagePicker: {
-    height: 160,
-    alignItems: "center",
-    marginBottom: 20
+    marginTop: 10,
+    alignItems: "center"
   },
   touchImage: {
     borderWidth: 1,
