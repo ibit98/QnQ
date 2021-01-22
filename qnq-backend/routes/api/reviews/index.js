@@ -76,7 +76,7 @@ router.get("/me/count", Auth.required, (req, res, next) => {
     payload: { id }
   } = req;
 
-  Reviews.estimatedDocumentCount({ _creator: id })
+  Reviews.countDocuments({ _creator: id })
     .then(data => {
       res.json(data);
     })
