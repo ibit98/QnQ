@@ -9,14 +9,14 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerView,
   DrawerItem,
   DrawerItemList,
-  createDrawerNavigator
+  createDrawerNavigator,
 } from "@react-navigation/drawer";
 
 import HomeStack from "./homeStack";
@@ -24,9 +24,10 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { UserContext } from "../../contexts/UserContext";
 import HomeScreen from "../../screens/HomeScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
+import EditProfileScreen from "../../screens/EditProfileScreen";
 import styles from "../../styles/navigation-styles";
 
-const CustomDrawer = props => {
+const CustomDrawer = (props) => {
   return (
     <React.Fragment>
       <DrawerContentScrollView {...props}>
@@ -47,7 +48,7 @@ const CustomDrawer = props => {
       <View
         style={{
           borderBottomColor: "gray",
-          borderBottomWidth: 0.2
+          borderBottomWidth: 0.2,
         }}
       />
       <DrawerItem
@@ -66,7 +67,7 @@ export default function QnQDrawer({ navigation }) {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerOpen", e => {
+    const unsubscribe = navigation.addListener("drawerOpen", (e) => {
       setStatusBarStyle("light");
     });
 
@@ -74,7 +75,7 @@ export default function QnQDrawer({ navigation }) {
   }, [navigation]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("drawerClose", e => {
+    const unsubscribe = navigation.addListener("drawerClose", (e) => {
       setStatusBarStyle("dark");
     });
 
@@ -88,7 +89,7 @@ export default function QnQDrawer({ navigation }) {
         activeTintColor: "#eb233a",
         inactiveTintColor: "#eb233a",
         signOutHandler: signOut,
-        user: user
+        user: user,
       }}
       drawerPosition="left"
       drawerStyle={styles.drawer}
@@ -102,6 +103,7 @@ export default function QnQDrawer({ navigation }) {
         options={{ title: "Home" }}
       />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen name="Edit" component={EditProfileScreen} />
     </Drawer.Navigator>
   );
 }
