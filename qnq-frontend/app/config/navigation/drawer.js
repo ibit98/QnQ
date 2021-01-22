@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
-import { StatusBar } from "expo-status-bar";
+import { StatusBar, setStatusBarStyle } from "expo-status-bar";
 import {
   Alert,
   Button,
@@ -9,22 +9,25 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerView,
   DrawerItem,
   DrawerItemList,
-  createDrawerNavigator
+  createDrawerNavigator,
 } from "@react-navigation/drawer";
 
+import HomeStack from "./homeStack";
 import { AuthContext } from "../../contexts/AuthContext";
+import { UserContext } from "../../contexts/UserContext";
 import HomeScreen from "../../screens/HomeScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
+import EditProfileScreen from "../../screens/EditProfileScreen";
 import styles from "../../styles/navigation-styles";
 
-const CustomDrawer = props => {
+const CustomDrawer = (props) => {
   return (
     <React.Fragment>
       <DrawerContentScrollView {...props}>
@@ -34,7 +37,9 @@ const CustomDrawer = props => {
             style={styles.drawerProfileImage}
           ></Image>
           <View style={styles.drawerProfileText}>
-            <Text style={styles.drawerProfileName}>User Name</Text>
+            <Text style={styles.drawerProfileName}>
+              {props.user ? props.user.name : ""}
+            </Text>
             <Text style={styles.drawerProfileRating}>rating</Text>
           </View>
         </SafeAreaView>
@@ -43,7 +48,7 @@ const CustomDrawer = props => {
       <View
         style={{
           borderBottomColor: "gray",
-          borderBottomWidth: 0.2
+          borderBottomWidth: 0.2,
         }}
       />
       <DrawerItem
@@ -57,8 +62,25 @@ const CustomDrawer = props => {
 
 const Drawer = createDrawerNavigator();
 
-export default function QnQDrawer() {
+export default function QnQDrawer({ navigation }) {
   const { signOut } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("drawerOpen", (e) => {
+      setStatusBarStyle("light");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("drawerClose", (e) => {
+      setStatusBarStyle("dark");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <Drawer.Navigator
@@ -66,15 +88,22 @@ export default function QnQDrawer() {
       drawerContentOptions={{
         activeTintColor: "#eb233a",
         inactiveTintColor: "#eb233a",
-        signOutHandler: signOut
+        signOutHandler: signOut,
+        user: user,
       }}
       drawerPosition="left"
       drawerStyle={styles.drawer}
       drawerType="front"
-      initialRouteName="Home"
+      headerMode="screen"
+      initialRouteName="HomeStack"
     >
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen
+        name="HomeStack"
+        component={HomeStack}
+        options={{ title: "Home" }}
+      />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen name="Edit" component={EditProfileScreen} />
     </Drawer.Navigator>
   );
 }
