@@ -8,18 +8,11 @@ const currentRoute = "/api/leaderboard";
 
 // Get Paginated Details of all Users
 router.get("/", (req, res, next) => {
-  const resPerPage = 25;
-  const page = parseInt(req.query.page) || 1;
+  const defaultLimit = 50;
+  const defaultOffset = 0;
 
-  console.log(
-    chalk.inverse.blue("GET") +
-      "   : " +
-      chalk.italic.cyan(currentRoute + "?page=" + page)
-  );
-
-  if (page < 1) {
-    throw Error("Non-positive Page Number");
-  }
+  const limit = parseInt((req.query.limit || defaultLimit).toString(), 10);
+  const offset = parseInt((req.query.offset || defaultOffset).toString(), 10);
 
   Reviews.aggregate()
     .group({
@@ -37,7 +30,17 @@ router.get("/", (req, res, next) => {
       reputationScore: true,
       user: { $arrayElemAt: ["$user", 0] },
     })
+    .project({
+      _id: true,
+      reputationScore: true,
+      gender: "$user.gender",
+      name: "$user.name",
+      email: "$user.email",
+    })
     .project("-user.salt -user.hash")
+    .sort("-reputationScore name")
+    .skip(offset)
+    .limit(limit)
     .then((data) => {
       res.json(data);
     })
