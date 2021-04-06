@@ -9,6 +9,8 @@ const Reviews = require("../../../models/reviews");
 
 const currentRoute = "/api/reviews";
 
+// TODO: Change all pagination to offset + limit instead of limit and page.
+
 // Get Paginated Details of all Reviews
 router.get("/", (req, res, next) => {
   const resPerPage = 25;
@@ -29,7 +31,7 @@ router.get("/", (req, res, next) => {
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
     .populate("_creator", "_id name")
-    .then(data => {
+    .then((data) => {
       res.json(data);
     })
     .catch(next);
@@ -56,7 +58,7 @@ router.get("/location/:placeId", (req, res, next) => {
     .skip(resPerPage * (page - 1))
     .limit(resPerPage)
     .populate("_creator", "_id name")
-    .then(data => {
+    .then((data) => {
       res.json(data);
     })
     .catch(next);
@@ -73,11 +75,11 @@ router.get("/me/count", Auth.required, (req, res, next) => {
   );
 
   const {
-    payload: { id }
+    payload: { id },
   } = req;
 
   Reviews.countDocuments({ _creator: id })
-    .then(data => {
+    .then((data) => {
       res.json(data);
     })
     .catch(next);
@@ -93,7 +95,7 @@ router.get("/:id", (req, res, next) => {
 
   // this will return all the data
   Reviews.findById(req.params.id)
-    .then(data => {
+    .then((data) => {
       res.json(data);
     })
     .catch(next);
@@ -108,12 +110,12 @@ router.get("/:id/my-rating", Auth.required, (req, res, next) => {
   );
 
   const {
-    payload: { id }
+    payload: { id },
   } = req;
 
   // this will return the rating entry if it exists
   Ratings.findOne({ _review: req.params.id, _rater: id })
-    .then(data => {
+    .then((data) => {
       res.json(data);
     })
     .catch(next);
@@ -128,21 +130,22 @@ router.post("/location/:placeId", Auth.required, (req, res, next) => {
       chalk.italic.cyan(`${currentRoute}/location/${placeId}`)
   );
 
-  const { title, text, creator } = req.body;
+  const { title, text, creator, score } = req.body;
 
   // TODO: clear all ratings with this review ID, and also change meta to (0, 0, 0).
+
   if (title) {
     Reviews.findOneAndUpdate(
       { _creator: creator, _location: placeId },
-      { title: title, text: text },
+      { title: title, text: text, score: score },
       { new: true, upsert: true }
     )
       .populate("_creator", "_id name")
-      .then(data => res.json(data))
+      .then((data) => res.json(data))
       .catch(next);
   } else {
     res.json({
-      error: "Review Title is missing"
+      error: "Some field is missing",
     });
   }
 });
@@ -151,7 +154,7 @@ router.post("/location/:placeId", Auth.required, (req, res, next) => {
 router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
   if (!req.body.userId || !req.body.feedback) {
     res.json({
-      error: "User ID and/or Feedback is missing"
+      error: "User ID and/or Feedback is missing",
     });
     throw Error("Inserting Rating: User ID and/or Feedback is missing!");
   }
@@ -181,7 +184,7 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
 
   if (feedback == "none") {
     Ratings.findOneAndDelete({ _rater: userId, _review: reviewId })
-      .then(oldRatingData => {
+      .then((oldRatingData) => {
         Reviews.findOne({ _id: reviewId }, (err, reviewData) => {
           if (err || !reviewData) {
             throw Error(
@@ -189,13 +192,13 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
             );
           }
           return reviewData;
-        }).then(oldReviewData => {
+        }).then((oldReviewData) => {
           let reviewUpdate = {
             meta: {
               beliefCount: oldReviewData.meta.beliefCount,
               disbeliefCount: oldReviewData.meta.disbeliefCount,
-              uncertaintyCount: oldReviewData.meta.uncertaintyCount
-            }
+              uncertaintyCount: oldReviewData.meta.uncertaintyCount,
+            },
           };
 
           if (oldRatingData) {
@@ -216,7 +219,7 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
 
           responseData = { oldRating: oldRatingData };
 
-          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then(data => {
+          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then((data) => {
             responseData.oldReview = data;
             responseData.updatedMeta = reviewUpdate.meta;
             return res.json(responseData);
@@ -230,7 +233,7 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
       { feedback: feedback },
       { upsert: true }
     )
-      .then(oldRatingData => {
+      .then((oldRatingData) => {
         Reviews.findOne({ _id: reviewId }, (err, reviewData) => {
           if (err || !reviewData) {
             throw Error(
@@ -238,13 +241,13 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
             );
           }
           return reviewData;
-        }).then(oldReviewData => {
+        }).then((oldReviewData) => {
           let reviewUpdate = {
             meta: {
               beliefCount: oldReviewData.meta.beliefCount,
               disbeliefCount: oldReviewData.meta.disbeliefCount,
-              uncertaintyCount: oldReviewData.meta.uncertaintyCount
-            }
+              uncertaintyCount: oldReviewData.meta.uncertaintyCount,
+            },
           };
 
           if (oldRatingData) {
@@ -277,7 +280,7 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
 
           responseData = { oldRating: oldRatingData };
 
-          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then(data => {
+          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then((data) => {
             responseData.oldReview = data;
             responseData.updatedMeta = reviewUpdate.meta;
             return res.json(responseData);
