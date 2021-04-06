@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 
 const StarRating = (props) => {
-  const starSize = 30;
+  const starSize = props.size == undefined ? 30 : props.size;
 
   const initialRating =
     props.initialRating == undefined ? 0 : props.initialRating;
@@ -13,6 +13,7 @@ const StarRating = (props) => {
     props.onRatingChange == undefined
       ? (newRating) => {}
       : props.onRatingChange;
+  const disabled = props.disabled;
 
   const [rating, setRating] = useState(initialRating);
 
@@ -26,7 +27,9 @@ const StarRating = (props) => {
           size={starSize}
           style={styles.starBackground}
           onPress={
-            rating > index
+            disabled
+              ? () => {}
+              : rating > index
               ? () => {}
               : () => {
                   setRating(index + 1);
@@ -40,10 +43,14 @@ const StarRating = (props) => {
             color="gold"
             size={starSize}
             style={styles.starForeground}
-            onPress={() => {
-              setRating(index + 1);
-              onRatingChange(index + 1);
-            }}
+            onPress={
+              disabled
+                ? () => {}
+                : () => {
+                    setRating(index + 1);
+                    onRatingChange(index + 1);
+                  }
+            }
           />
         )}
       </View>

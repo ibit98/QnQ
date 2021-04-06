@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { useIsDrawerOpen } from "@react-navigation/drawer";
 import { useFocusEffect } from "@react-navigation/native";
@@ -20,36 +20,34 @@ import { API_URL } from "../constants";
 
 export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);
-  const [reviewsPage, setReviewsPage] = useState(1);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const {
-    place: { id }
+    place: { id },
   } = route.params;
   const isDrawerOpen = useIsDrawerOpen();
 
   const loadReviewsAsync = async () => {
-    fetch(API_URL + `reviews/location/${id}?page=${reviewsPage}`, {
+    fetch(API_URL + `reviews/location/${id}?offset=${reviews.length}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
-      .then(jsonResponse => jsonResponse.json())
-      .then(response => {
+      .then((jsonResponse) => jsonResponse.json())
+      .then((response) => {
         if (response.error) {
           return;
         }
 
         appendReviews(response);
         setIsLoadingReviews(false);
-        if (response.length > 0) setReviewsPage(reviewsPage + 1);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
-  const appendReviews = newReviews => {
+  const appendReviews = (newReviews) => {
     setReviews([...reviews, ...newReviews]);
   };
   const renderReview = ({ item }) => (
@@ -62,7 +60,6 @@ export default function LocationScreen({ route, navigation }) {
       return () => {
         setReviews([]);
         setIsLoadingReviews(true);
-        setReviewsPage(1);
       };
     }, [navigation])
   );
@@ -74,7 +71,7 @@ export default function LocationScreen({ route, navigation }) {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("CreateReview", {
-            place: route.params.place
+            place: route.params.place,
           })
         }
       >
@@ -97,9 +94,10 @@ export default function LocationScreen({ route, navigation }) {
           <Text style={styles.noReviewsBanner}>No reviews yet</Text>
         ) : (
           <FlatList
+            style={styles.reviewList}
             data={reviews}
             renderItem={renderReview}
-            keyExtractor={item => item._id}
+            keyExtractor={(item) => item._id}
           />
         )}
       </View>

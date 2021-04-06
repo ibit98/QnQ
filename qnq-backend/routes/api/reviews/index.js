@@ -13,23 +13,18 @@ const currentRoute = "/api/reviews";
 
 // Get Paginated Details of all Reviews
 router.get("/", (req, res, next) => {
-  const resPerPage = 25;
-  const page = parseInt(req.query.page) || 1;
-
-  if (page < 1) {
-    console.log("Non-positive Page Number. Changing to page 1.");
-    page = 1;
-  }
+  const limit = 25;
+  const offset = Math.max(parseInt(req.query.offset) || 0, 0);
 
   console.log(
     chalk.inverse.blue("GET") +
       "   : " +
-      chalk.italic.cyan(currentRoute + "?page=" + page)
+      chalk.italic.cyan(currentRoute + "?offset=" + offset)
   );
 
   Reviews.find({})
-    .skip(resPerPage * (page - 1))
-    .limit(resPerPage)
+    .skip(offset)
+    .limit(limit)
     .populate("_creator", "_id name")
     .then((data) => {
       res.json(data);

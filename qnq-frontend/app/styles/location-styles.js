@@ -4,34 +4,37 @@ const styles = StyleSheet.create({
   myImage: {
     height: 50,
     width: 50,
-    borderRadius: 50
+    borderRadius: 50,
   },
   myReviewContainer: {
     padding: 10,
     paddingBottom: 10,
     backgroundColor: "white",
-    alignItems: "center"
+    alignItems: "center",
   },
   myReviewBannerPrimary: {
     justifyContent: "center",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   myReviewBannerSecondary: {
     justifyContent: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   reviewsContainer: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+  },
+  reviewList: {
+    marginBottom: 335,
   },
   reviewsHeader: {
     fontSize: 20,
     padding: 13,
-    paddingTop: 3
+    paddingTop: 3,
   },
   noReviewsBanner: {
     textAlign: "center",
-    color: "gray"
-  }
+    color: "gray",
+  },
 });
 
 export default styles;
