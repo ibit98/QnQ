@@ -23,11 +23,11 @@ mongoose
     useNewUrlParser: true,
     useFindAndModify: false,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log(`Database connected successfully`))
-  .catch(err => console.log(err));
-// mongoose.set("debug", true);
+  .catch((err) => console.log(err));
+mongoose.set("debug", true);
 
 // since mongoose promise is depreciated, we overide it with node's promise
 mongoose.Promise = global.Promise;
@@ -48,7 +48,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "session-secret",
     cookie: { maxAge: 60000 },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
   })
 );
 
@@ -65,7 +65,7 @@ app.use("/", routes);
 // if (!isProduction) {
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
-    error: err.message
+    error: err.message,
   });
 
   console.log(chalk.red(err.message));

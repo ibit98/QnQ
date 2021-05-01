@@ -15,7 +15,7 @@ const initialState = {
   isLoading: true,
   isSignout: false,
   user: null,
-  userToken: null
+  userToken: null,
 };
 
 function reducer(prevState, action) {
@@ -25,21 +25,21 @@ function reducer(prevState, action) {
         ...prevState,
         isLoading: false,
         user: action.data.user,
-        userToken: action.data.token
+        userToken: action.data.token,
       };
     case "SIGN_IN":
       return {
         ...prevState,
         isSignout: false,
         user: action.data.user,
-        userToken: action.data.token
+        userToken: action.data.token,
       };
     case "SIGN_OUT":
       return {
         ...prevState,
         isSignout: true,
         user: null,
-        userToken: null
+        userToken: null,
       };
     default:
       throw new Error();
@@ -52,6 +52,7 @@ export default function App() {
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
+      console.log("Bootstrap me!");
       let userToken;
 
       try {
@@ -70,21 +71,21 @@ export default function App() {
           ? {
               Accept: "application/json",
               "Content-Type": "application/json",
-              Authorization: "Bearer " + userToken
+              Authorization: "Bearer " + userToken,
             }
           : {
               Accept: "application/json",
-              "Content-Type": "application/json"
-            }
+              "Content-Type": "application/json",
+            },
       })
-        .then(jsonResponse => jsonResponse.json())
-        .then(response => {
+        .then((jsonResponse) => jsonResponse.json())
+        .then((response) => {
           if (response.error) {
             // jwt has expired or corrupt token
             AsyncStorage.removeItem(USER_TOKEN).then(() => {
               dispatch({
                 type: "RESTORE_TOKEN",
-                data: { token: null, user: null }
+                data: { token: null, user: null },
               });
             });
             return;
@@ -94,11 +95,11 @@ export default function App() {
           AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
             dispatch({
               type: "RESTORE_TOKEN",
-              data: { token: response.user.token, user: response.user }
+              data: { token: response.user.token, user: response.user },
             });
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     };
@@ -108,7 +109,7 @@ export default function App() {
 
   const authContextValue = useMemo(
     () => ({
-      signIn: async data => {
+      signIn: async (data) => {
         if (data.email.length < 1) {
           // TODO: show alert in input boxes itself or login form addition
           Alert.alert("Enter email!");
@@ -124,17 +125,17 @@ export default function App() {
           method: "POST",
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             user: {
               email: data.email,
-              password: data.password
-            }
-          })
+              password: data.password,
+            },
+          }),
         })
-          .then(jsonResponse => jsonResponse.json())
-          .then(response => {
+          .then((jsonResponse) => jsonResponse.json())
+          .then((response) => {
             if (response.errors) {
               console.info(response.errors);
               for (let key in response.errors) {
@@ -148,11 +149,11 @@ export default function App() {
             AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
               dispatch({
                 type: "SIGN_IN",
-                data: { token: response.user.token, user: response.user }
+                data: { token: response.user.token, user: response.user },
               });
             });
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
           });
       },
@@ -162,23 +163,23 @@ export default function App() {
           dispatch({ type: "SIGN_OUT" });
         });
       },
-      signUp: async data => {
+      signUp: async (data) => {
         fetch(API_URL + "users", {
           method: "POST",
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             user: {
               name: data.name,
               email: data.email,
-              password: data.password
-            }
-          })
+              password: data.password,
+            },
+          }),
         })
-          .then(jsonResponse => jsonResponse.json())
-          .then(response => {
+          .then((jsonResponse) => jsonResponse.json())
+          .then((response) => {
             if (response.error) {
               //TODO: change this alert to reflect in UI
               Alert.alert(response.error);
@@ -189,21 +190,21 @@ export default function App() {
             AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
               dispatch({
                 type: "SIGN_IN",
-                data: { token: response.user.token, user: response.user }
+                data: { token: response.user.token, user: response.user },
               });
               return true;
             });
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
           });
         return false;
-      }
+      },
     }),
     []
   );
   const userContextValue = {
-    user: state.user
+    user: state.user,
   };
 
   if (state.isLoading) {

@@ -133,7 +133,7 @@ router.post("/location/:placeId", Auth.required, (req, res, next) => {
     Reviews.findOneAndUpdate(
       { _creator: creator, _location: placeId },
       { title: title, text: text, score: score },
-      { new: true, upsert: true }
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     )
       .populate("_creator", "_id name")
       .then((data) => res.json(data))
@@ -214,7 +214,9 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
 
           responseData = { oldRating: oldRatingData };
 
-          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then((data) => {
+          Reviews.findByIdAndUpdate(reviewId, reviewUpdate, {
+            setDefaultsOnInsert: true,
+          }).then((data) => {
             responseData.oldReview = data;
             responseData.updatedMeta = reviewUpdate.meta;
             return res.json(responseData);
@@ -226,7 +228,7 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
     Ratings.findOneAndUpdate(
       { _rater: userId, _review: reviewId },
       { feedback: feedback },
-      { upsert: true }
+      { upsert: true, setDefaultsOnInsert: true }
     )
       .then((oldRatingData) => {
         Reviews.findOne({ _id: reviewId }, (err, reviewData) => {
@@ -275,7 +277,9 @@ router.post("/:reviewId/rate", Auth.required, (req, res, next) => {
 
           responseData = { oldRating: oldRatingData };
 
-          Reviews.findByIdAndUpdate(reviewId, reviewUpdate).then((data) => {
+          Reviews.findByIdAndUpdate(reviewId, reviewUpdate, {
+            setDefaultsOnInsert: true,
+          }).then((data) => {
             responseData.oldReview = data;
             responseData.updatedMeta = reviewUpdate.meta;
             return res.json(responseData);
