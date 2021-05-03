@@ -1,7 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
 
-const Reviews = require("../../../models/reviews");
+import Reviews from "../../../models/reviews";
+
+const router = express.Router();
 
 // Get Location score based on all reviews
 router.get("/:placeID/score", async (req, res, next) => {
@@ -16,6 +17,7 @@ router.get("/:placeID/score", async (req, res, next) => {
         minScore: { $min: "$score" },
         maxScore: { $max: "$score" },
         avgScore: { $avg: "$score" },
+        sumQoI: { $sum: "$meta.QoI" },
       });
 
     res.json(data[0]);
@@ -24,4 +26,4 @@ router.get("/:placeID/score", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
