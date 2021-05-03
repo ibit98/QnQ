@@ -7,6 +7,7 @@ import { initialize, session } from "passport";
 // import session from "express-session";
 import routes from "./routes";
 import { PORT, DB, NODE_ENV, SESSION_SECRET } from "./config/env.dev";
+// import { repairReviews } from "./helpers/repair-db";
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,9 @@ if (NODE_ENV === "development") {
 }
 
 app.use(json());
+
+// Repair DB, if needed
+// repairReviews();
 
 // app.use(
 //   session({
