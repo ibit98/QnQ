@@ -1,6 +1,8 @@
-const jwt = require("express-jwt");
+import { Request } from "express";
+import jwt from "express-jwt";
+import { JWT_SECRET } from "../config/env.dev";
 
-const getTokenFromHeaders = req => {
+const getTokenFromHeaders = (req: Request) => {
   if (
     req.headers.authorization &&
     req.headers.authorization.split(" ")[0] === "Bearer"
@@ -12,18 +14,16 @@ const getTokenFromHeaders = req => {
 
 const Auth = {
   required: jwt({
-    secret: process.env.JWT_SECRET || "secret",
-    userProperty: "payload",
+    secret: JWT_SECRET,
     getToken: getTokenFromHeaders,
-    algorithms: ["sha1", "RS256", "HS256"]
+    algorithms: ["sha1", "RS256", "HS256"],
   }),
   optional: jwt({
-    secret: process.env.JWT_SECRET || "secret",
-    userProperty: "payload",
+    secret: JWT_SECRET,
     getToken: getTokenFromHeaders,
     credentialsRequired: false,
-    algorithms: ["sha1", "RS256", "HS256"]
-  })
+    algorithms: ["sha1", "RS256", "HS256"],
+  }),
 };
 
-module.exports = Auth;
+export default Auth;
