@@ -7,15 +7,18 @@ export const repairReviews = async () => {
     const reviews = await Reviews.find({});
 
     for (const review of reviews) {
-      review.meta.beliefCount = await Ratings.where("_review", review._id)
-        .where("feedback", "helpful")
-        .count();
-      review.meta.disbeliefCount = await Ratings.where("_review", review._id)
-        .where("feedback", "harmful")
-        .count();
-      review.meta.uncertaintyCount = await Ratings.where("_review", review._id)
-        .where("feedback", "uncertain")
-        .count();
+      review.meta.beliefCount = await Ratings.countDocuments({
+        _review: review._id,
+        feedback: "helpful",
+      });
+      review.meta.disbeliefCount = await Ratings.countDocuments({
+        _review: review._id,
+        feedback: "harmful",
+      });
+      review.meta.uncertaintyCount = await Ratings.countDocuments({
+        _review: review._id,
+        feedback: "uncertain",
+      });
 
       review.meta.QoI = calculateQoI(review.meta);
       await review.save();

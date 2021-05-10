@@ -1,6 +1,7 @@
 import { model, isValidObjectId, Schema, Model, Document } from "mongoose";
 
 import calculateQoI from "../helpers/qoi";
+import Ratings from "./ratings";
 
 export interface ReviewMeta {
   beliefCount: number;
@@ -71,29 +72,11 @@ const ReviewsSchema = new Schema<ReviewDocument, ReviewModelInterface>(
       },
       QoI: {
         type: Number,
-        default: function () {
-          return calculateQoI({
-            beliefCount: this.meta.beliefCount,
-            disbeliefCount: this.meta.disbeliefCount,
-            uncertaintyCount: this.meta.uncertaintyCount,
-          });
-        },
-        get: function (qoi) {
-          console.log(`in getter, with ${qoi}`);
-          return calculateQoI({
-            beliefCount: this.meta.beliefCount,
-            disbeliefCount: this.meta.disbeliefCount,
-            uncertaintyCount: this.meta.uncertaintyCount,
-          });
-        },
-        set: function (qoi) {
-          console.log(`in setter, with ${qoi}`);
-          return calculateQoI({
-            beliefCount: this.meta.beliefCount,
-            disbeliefCount: this.meta.disbeliefCount,
-            uncertaintyCount: this.meta.uncertaintyCount,
-          });
-        },
+        default: calculateQoI({
+          beliefCount: 0,
+          disbeliefCount: 0,
+          uncertaintyCount: 0,
+        }),
       },
     },
   },
@@ -134,4 +117,15 @@ export const getReviewById = async (reviewId: string) => {
   }
 
   return null;
+};
+
+export const deleteReviewByPK = async (creatorId: string, placeId: string) => {
+  const review = await Reviews.findOneAndDelete({
+    _creator: creatorId,
+    _location: placeId,
+  });
+
+  if (review !== null) {
+    await Ratings.deleteMany({ _review: review._id });
+  }
 };

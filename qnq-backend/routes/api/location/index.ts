@@ -14,13 +14,24 @@ router.get("/:placeID/score", async (req, res, next) => {
       .group({
         _id: "$_location",
         count: { $sum: 1 },
-        minScore: { $min: "$score" },
-        maxScore: { $max: "$score" },
         avgScore: { $avg: "$score" },
-        sumQoI: { $sum: "$meta.QoI" },
+        minQoI: { $min: "$meta.QoI" },
+        maxQoI: { $max: "$meta.QoI" },
+        avgQoI_x_score: { $avg: { $multiply: ["$score", "$meta.QoI"] } },
       });
 
-    res.json(data[0]);
+    if (data.length < 1 || data[0].count < 2) {
+      return res.json(0);
+    }
+
+    const { avgScore, minQoI, maxQoI, avgQoI_x_score } = data[0];
+
+    const normalisedScore =
+      maxQoI === minQoI
+        ? 0
+        : (avgQoI_x_score - minQoI * avgScore) / (maxQoI - minQoI);
+
+    res.json(normalisedScore);
   } catch (e) {
     next(e);
   }

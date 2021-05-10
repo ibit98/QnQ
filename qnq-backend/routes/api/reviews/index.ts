@@ -1,10 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 
 import Auth from "../../auth";
 import calculateQoI from "../../../helpers/qoi";
 import Ratings, { RatingDocument } from "../../../models/ratings";
-import Reviews, { getReviewById } from "../../../models/reviews";
+import Reviews, {
+  getReviewById,
+  deleteReviewByPK,
+} from "../../../models/reviews";
 
 const router = express.Router();
 
@@ -133,7 +135,7 @@ router.post(
     const { title, text, score } = req.body;
     const creatorId: string = req.user["id"];
 
-    // TODO: clear all ratings with this review ID, and also change meta to (0, 0, 0).
+    await deleteReviewByPK(creatorId, placeId);
 
     // If any of the required body parameters (title) are
     // missing then send Status 422: Unprocessable Entity

@@ -1,7 +1,7 @@
 export const BELIEF_ASYMPTOTE = 100;
 export const BELIEF_GROWTH_RATE = 0.1;
 export const BELIEF_NU = 0.1;
-export const N_THRES = 10;
+export const N_THRES = 3;
 export const KOHLRAUSCH_FACTOR = 0.8;
 export const W_U_MAX = 0.5;
 export const UNCERTAINTY_ASYMPTOTE = 100;
