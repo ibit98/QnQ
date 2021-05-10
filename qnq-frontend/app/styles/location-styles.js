@@ -1,6 +1,16 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  locationRatingView: {
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
+  locationRating: {
+    fontWeight: "bold",
+  },
   myImage: {
     height: 50,
     width: 50,

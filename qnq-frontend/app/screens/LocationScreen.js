@@ -14,12 +14,14 @@ import {
 import { useIsDrawerOpen } from "@react-navigation/drawer";
 import { useFocusEffect } from "@react-navigation/native";
 
+import StarRating from "../components/StarRating";
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
 import { API_URL } from "../constants";
 
 export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);
+  const [locationScore, setLocationScore] = useState(0);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const {
     place: { id },
@@ -54,6 +56,27 @@ export default function LocationScreen({ route, navigation }) {
     <ReviewItem review={item} standalone={false} />
   );
 
+  const loadLocationScore = async () => {
+    fetch(API_URL + `location/${id}/score`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((jsonResponse) => jsonResponse.json())
+      .then((response) => {
+        if (response.error) {
+          return;
+        }
+
+        setLocationScore(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadReviewsAsync();
@@ -64,9 +87,21 @@ export default function LocationScreen({ route, navigation }) {
     }, [navigation])
   );
 
+  useEffect(() => {
+    loadLocationScore();
+  }, []);
+
+  const MAX_SCORE = 5;
+
   return (
     <View>
       <StatusBar style={isDrawerOpen ? "light" : "dark"} />
+      <View style={styles.locationRatingView}>
+        <Text>Location Score</Text>
+        <Text style={styles.locationRating}>
+          {Math.round(locationScore * 10) / 10} / 5
+        </Text>
+      </View>
 
       <TouchableOpacity
         onPress={() =>
@@ -86,6 +121,7 @@ export default function LocationScreen({ route, navigation }) {
           </Text>
         </View>
       </TouchableOpacity>
+
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsHeader}>Reviews</Text>
         {isLoadingReviews ? (

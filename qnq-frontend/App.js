@@ -52,7 +52,6 @@ export default function App() {
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      console.log("Bootstrap me!");
       let userToken;
 
       try {
@@ -65,23 +64,24 @@ export default function App() {
         return;
       }
 
-      fetch(API_URL + "users/me", {
-        method: "GET",
-        headers: userToken
-          ? {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + userToken,
-            }
-          : {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-      })
-        .then((jsonResponse) => jsonResponse.json())
-        .then((response) => {
-          if (response.error) {
-            // jwt has expired or corrupt token
+      try {
+        const jsonResponse = await fetch(API_URL + "users/me", {
+          method: "GET",
+          headers: userToken
+            ? {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + userToken,
+              }
+            : {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+        });
+
+        switch (jsonResponse.status) {
+          case 400: // First login from this device
+          case 401: // jwt has expired or is corrupt
             AsyncStorage.removeItem(USER_TOKEN).then(() => {
               dispatch({
                 type: "RESTORE_TOKEN",
@@ -89,19 +89,31 @@ export default function App() {
               });
             });
             return;
-          }
+        }
 
-          // Persist refreshed token in AsyncStorage and then dispatch SIGN_IN action
-          AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
+        const response = await jsonResponse.json();
+
+        if (response.error) {
+          // jwt has expired or corrupt token
+          AsyncStorage.removeItem(USER_TOKEN).then(() => {
             dispatch({
               type: "RESTORE_TOKEN",
-              data: { token: response.user.token, user: response.user },
+              data: { token: null, user: null },
             });
           });
-        })
-        .catch((error) => {
-          console.error(error);
+          return;
+        }
+
+        // Persist refreshed token in AsyncStorage and then dispatch SIGN_IN action
+        AsyncStorage.setItem(USER_TOKEN, response.user.token).then(() => {
+          dispatch({
+            type: "RESTORE_TOKEN",
+            data: { token: response.user.token, user: response.user },
+          });
         });
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     bootstrapAsync();

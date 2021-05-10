@@ -37,7 +37,7 @@ const StarRating = (props) => {
                 }
           }
         />
-        {rating > index && (
+        {Math.floor(rating) > index && (
           <Icon
             name="star"
             color="gold"
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "flex-start",
     height: 30,
   },
   starView: {},
