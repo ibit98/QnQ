@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  View
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,14 +21,17 @@ import HelpfulRater from "./HelpfulRater";
 import HarmfulRater from "./HarmfulRater";
 import UncertainRater from "./UncertainRater";
 import standaloneStyles from "../styles/review-styles";
+import StarRating from "./StarRating";
 
 export default function ReviewItem({ review, standalone }) {
+  const MAX_SCORE = 5;
+
   const { user } = useContext(UserContext);
   const { title, text } = review;
   const initialState = {
     reviewId: review._id,
     meta: review.meta,
-    rating: null
+    rating: null,
   };
 
   function setHelpful(reviewId, dispatch) {
@@ -69,8 +72,8 @@ export default function ReviewItem({ review, standalone }) {
             disbeliefCount:
               prevState.rating == "harmful"
                 ? prevState.meta.disbeliefCount - 1
-                : prevState.meta.disbeliefCount
-          }
+                : prevState.meta.disbeliefCount,
+          },
         };
       case "RATE_HARMFUL":
         return {
@@ -88,8 +91,8 @@ export default function ReviewItem({ review, standalone }) {
             disbeliefCount:
               prevState.rating == "harmful"
                 ? prevState.meta.disbeliefCount
-                : prevState.meta.disbeliefCount + 1
-          }
+                : prevState.meta.disbeliefCount + 1,
+          },
         };
       case "RATE_UNCERTAIN":
         return {
@@ -107,8 +110,8 @@ export default function ReviewItem({ review, standalone }) {
             disbeliefCount:
               prevState.rating == "harmful"
                 ? prevState.meta.disbeliefCount - 1
-                : prevState.meta.disbeliefCount
-          }
+                : prevState.meta.disbeliefCount,
+          },
         };
       case "SET_NO_RATING":
         return {
@@ -126,18 +129,18 @@ export default function ReviewItem({ review, standalone }) {
             disbeliefCount:
               prevState.rating == "harmful"
                 ? prevState.meta.disbeliefCount - 1
-                : prevState.meta.disbeliefCount
-          }
+                : prevState.meta.disbeliefCount,
+          },
         };
       case "UPDATE_META":
         return {
           ...prevState,
-          meta: action.data.meta
+          meta: action.data.meta,
         };
       case "UPDATE_MY_RATING":
         return {
           ...prevState,
-          rating: action.data.rating
+          rating: action.data.rating,
         };
       default:
         throw new Error();
@@ -150,15 +153,15 @@ export default function ReviewItem({ review, standalone }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer " + user.token
+        Authorization: "Bearer " + user.token,
       },
       body: JSON.stringify({
         feedback: type,
-        userId: user._id
-      })
+        userId: user._id,
+      }),
     })
-      .then(jsonResponse => jsonResponse.json())
-      .then(response => {
+      .then((jsonResponse) => jsonResponse.json())
+      .then((response) => {
         if (response.error) {
           console.error(response.error);
           return;
@@ -171,7 +174,7 @@ export default function ReviewItem({ review, standalone }) {
         //   data: { meta: response.updatedMeta }
         // });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -189,11 +192,11 @@ export default function ReviewItem({ review, standalone }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: "Bearer " + user.token
-        }
+          Authorization: "Bearer " + user.token,
+        },
       })
-        .then(jsonResponse => jsonResponse.json())
-        .then(response => {
+        .then((jsonResponse) => jsonResponse.json())
+        .then((response) => {
           if (!response) {
             dispatch({ type: "UPDATE_MY_RATING", data: { rating: null } });
             return;
@@ -206,10 +209,10 @@ export default function ReviewItem({ review, standalone }) {
 
           dispatch({
             type: "UPDATE_MY_RATING",
-            data: { rating: response.feedback }
+            data: { rating: response.feedback },
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     }
@@ -227,7 +230,14 @@ export default function ReviewItem({ review, standalone }) {
           ></Image>
           <View style={styles.reviewerText}>
             <Text style={styles.reviewerName}>{review._creator.name}</Text>
-            <Text style={styles.reviewerRating}>Rating</Text>
+            <View style={styles.reviewScore}>
+              <StarRating
+                size={18}
+                disabled={true}
+                initialRating={review.score}
+                starCount={MAX_SCORE}
+              />
+            </View>
           </View>
         </View>
         <TouchableHighlight
@@ -296,7 +306,14 @@ export default function ReviewItem({ review, standalone }) {
           <Text style={standaloneStyles.reviewerName}>
             {review._creator.name}
           </Text>
-          <Text style={standaloneStyles.reviewerRating}>Rating</Text>
+          <View style={styles.reviewScore}>
+            <StarRating
+              size={25}
+              disabled={true}
+              initialRating={review.score}
+              starCount={MAX_SCORE}
+            />
+          </View>
         </View>
       </View>
       <Text style={standaloneStyles.reviewText}>{review.text}</Text>
@@ -336,47 +353,44 @@ export default function ReviewItem({ review, standalone }) {
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth: 1,
-    borderBottomColor: "lightgray"
+    borderBottomColor: "lightgray",
   },
   ratingView: {
     padding: 7,
     paddingTop: 12,
     flexDirection: "row",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   reviewerImage: {
     borderRadius: 50,
     height: 35,
-    width: 35
+    width: 35,
   },
   reviewerText: {
     marginLeft: 8,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   reviewerView: {
     flexDirection: "row",
     paddingTop: 15,
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   reviewerName: {
     color: "black",
     fontSize: 13,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
-  reviewerRating: {
-    color: "gray",
-    fontSize: 13
-  },
+  reviewScore: {},
   reviewContentView: {
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   reviewTitle: {
     fontWeight: "bold",
-    fontSize: 15
+    fontSize: 15,
   },
   reviewText: {
-    color: "gray"
-  }
+    color: "gray",
+  },
 });

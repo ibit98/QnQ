@@ -9,52 +9,73 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { useIsDrawerOpen } from "@react-navigation/drawer";
 import { useFocusEffect } from "@react-navigation/native";
 
+import StarRating from "../components/StarRating";
 import ReviewItem from "../components/ReviewItem";
 import styles from "../styles/location-styles";
 import { API_URL } from "../constants";
 
 export default function LocationScreen({ route, navigation }) {
   const [reviews, setReviews] = useState([]);
-  const [reviewsPage, setReviewsPage] = useState(1);
+  const [locationScore, setLocationScore] = useState(0);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const {
-    place: { id }
+    place: { id },
   } = route.params;
   const isDrawerOpen = useIsDrawerOpen();
 
   const loadReviewsAsync = async () => {
-    fetch(API_URL + `reviews/location/${id}?page=${reviewsPage}`, {
+    fetch(API_URL + `reviews/location/${id}?offset=${reviews.length}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
-      .then(jsonResponse => jsonResponse.json())
-      .then(response => {
+      .then((jsonResponse) => jsonResponse.json())
+      .then((response) => {
         if (response.error) {
           return;
         }
 
         appendReviews(response);
         setIsLoadingReviews(false);
-        if (response.length > 0) setReviewsPage(reviewsPage + 1);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
-  const appendReviews = newReviews => {
+  const appendReviews = (newReviews) => {
     setReviews([...reviews, ...newReviews]);
   };
   const renderReview = ({ item }) => (
     <ReviewItem review={item} standalone={false} />
   );
+
+  const loadLocationScore = async () => {
+    fetch(API_URL + `location/${id}/score`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((jsonResponse) => jsonResponse.json())
+      .then((response) => {
+        if (response.error) {
+          return;
+        }
+
+        setLocationScore(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -62,19 +83,30 @@ export default function LocationScreen({ route, navigation }) {
       return () => {
         setReviews([]);
         setIsLoadingReviews(true);
-        setReviewsPage(1);
       };
     }, [navigation])
   );
 
+  useEffect(() => {
+    loadLocationScore();
+  }, []);
+
+  const MAX_SCORE = 5;
+
   return (
     <View>
       <StatusBar style={isDrawerOpen ? "light" : "dark"} />
+      <View style={styles.locationRatingView}>
+        <Text>Location Score</Text>
+        <Text style={styles.locationRating}>
+          {Math.round(locationScore * 10) / 10} / 5
+        </Text>
+      </View>
 
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("CreateReview", {
-            place: route.params.place
+            place: route.params.place,
           })
         }
       >
@@ -89,6 +121,7 @@ export default function LocationScreen({ route, navigation }) {
           </Text>
         </View>
       </TouchableOpacity>
+
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsHeader}>Reviews</Text>
         {isLoadingReviews ? (
@@ -97,9 +130,10 @@ export default function LocationScreen({ route, navigation }) {
           <Text style={styles.noReviewsBanner}>No reviews yet</Text>
         ) : (
           <FlatList
+            style={styles.reviewList}
             data={reviews}
             renderItem={renderReview}
-            keyExtractor={item => item._id}
+            keyExtractor={(item) => item._id}
           />
         )}
       </View>
