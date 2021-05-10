@@ -14,7 +14,10 @@ export default class RankListItem extends PureComponent {
   }
 
   render() {
-    const { user, rank } = this.props;
+    const {
+      user: { name, reputationScore },
+      rank,
+    } = this.props;
 
     const styles = StyleSheet.create({
       container: {
@@ -24,7 +27,14 @@ export default class RankListItem extends PureComponent {
         margin: 6,
       },
       userCard: {
-        backgroundColor: "#fffaf0",
+        backgroundColor:
+          rank === 1
+            ? "gold"
+            : rank === 2
+            ? "silver"
+            : rank === 3
+            ? "#b08d57"
+            : "#fffaf0",
         borderRadius: 5,
         flex: 1,
         elevation: 2,
@@ -48,12 +58,10 @@ export default class RankListItem extends PureComponent {
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.userCard}
-          onPress={() =>
-            console.log(`Should navigate to ${user.name}\'s page.`)
-          }
+          onPress={() => console.log(`Should navigate to ${name}\'s page.`)}
         >
           <View style={styles.banner}>
-            <Text style={styles.name}>{user.name}</Text>
+            <Text style={styles.name}>{name}</Text>
             <Text style={styles.rank}>{rank}</Text>
           </View>
         </TouchableOpacity>

@@ -9,7 +9,7 @@ import {
   View,
   SafeAreaView,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import { Avatar, Title, Caption, TouchableRipple } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -28,18 +28,18 @@ export default function ProfileScreen({ navigation }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`
-        }
+          Authorization: `Bearer ${user.token}`,
+        },
       })
-        .then(jsonResponse => jsonResponse.json())
-        .then(response => {
+        .then((jsonResponse) => jsonResponse.json())
+        .then((response) => {
           if (response.error) {
             return;
           }
 
           setReviewCount(response);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     };
@@ -131,11 +131,11 @@ export default function ProfileScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   Outer: {
-    flex: 1
+    flex: 1,
   },
   userInfoView: {
     marginTop: 40,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   userIdentityView: {
     marginTop: 20,
@@ -143,17 +143,17 @@ const styles = StyleSheet.create({
     width: "40%",
     flexDirection: "column",
     alignItems: "center",
-    marginLeft: 16
+    marginLeft: 16,
   },
   userImage: {},
   userNameView: {
     paddingTop: 10,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   userContactView: {
     marginTop: 37,
     width: "60%",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   userMetaDataView: {
     marginBottom: 10,
@@ -163,32 +163,32 @@ const styles = StyleSheet.create({
     borderTopColor: "#cccccc",
     borderTopWidth: 1,
     height: 90,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   userMetaDataBox: {
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
     borderRightColor: "#dddddd",
-    borderRightWidth: 0.7
+    borderRightWidth: 0.7,
   },
   userMetaDataBoxLast: {
-    borderRightWidth: 0
+    borderRightWidth: 0,
   },
   optionsView: {},
   row: {
     flexDirection: "row",
-    marginBottom: 15
+    marginBottom: 15,
   },
   rowText: {
     color: "black",
     fontWeight: "600",
     fontSize: 16,
-    marginLeft: 10
+    marginLeft: 10,
   },
   menuItem: {
     flexDirection: "row",
     paddingVertical: 15,
-    paddingHorizontal: 30
-  }
+    paddingHorizontal: 30,
+  },
 });
