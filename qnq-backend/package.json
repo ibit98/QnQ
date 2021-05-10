@@ -4,7 +4,6 @@
   "description": "A Server for QnQ Based App",
   "main": "index.js",
   "dependencies": {
-    "chalk": "^4.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
