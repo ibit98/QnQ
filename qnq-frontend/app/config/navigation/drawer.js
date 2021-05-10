@@ -9,23 +9,24 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerView,
   DrawerItem,
   DrawerItemList,
-  createDrawerNavigator
+  createDrawerNavigator,
 } from "@react-navigation/drawer";
 
 import HomeStack from "./homeStack";
 import ProfileStack from "./profileStack";
+import LeaderboardStack from "./leaderboardStack";
 import { AuthContext } from "../../contexts/AuthContext";
 import { UserContext } from "../../contexts/UserContext";
 import styles from "../../styles/navigation-styles";
 
-const CustomDrawer = props => {
+const CustomDrawer = (props) => {
   return (
     <React.Fragment>
       <DrawerContentScrollView {...props}>
@@ -46,7 +47,7 @@ const CustomDrawer = props => {
       <View
         style={{
           borderBottomColor: "gray",
-          borderBottomWidth: 0.2
+          borderBottomWidth: 0.2,
         }}
       />
       <DrawerItem
@@ -71,7 +72,7 @@ export default function QnQDrawer({ navigation }) {
         activeTintColor: "#eb233a",
         inactiveTintColor: "#eb233a",
         signOutHandler: signOut,
-        user: user
+        user: user,
       }}
       drawerPosition="left"
       drawerStyle={styles.drawer}
@@ -88,6 +89,11 @@ export default function QnQDrawer({ navigation }) {
         name="ProfileStack"
         component={ProfileStack}
         options={{ title: "Profile" }}
+      />
+      <Drawer.Screen
+        name="LeaderboardStack"
+        component={LeaderboardStack}
+        options={{ title: "Leaderboard" }}
       />
     </Drawer.Navigator>
   );
