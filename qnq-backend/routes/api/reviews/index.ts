@@ -65,6 +65,32 @@ router.get(
   }
 );
 
+// Get /location/:placeId/my - get the logged in user's review of a location
+router.get(
+  "/location/:placeId/my",
+  Auth.required,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const placeId = req.params.placeId.toString();
+    const loggedInUserID: string = req.user["id"];
+
+    try {
+      const data = await Reviews.findOne({
+        _location: placeId,
+        _creator: loggedInUserID,
+      }).populate("_creator", "_id name");
+      res.json(data);
+    } catch (error) {
+      // If the error is caused due to invalid Review ID being requested,
+      // return Response Status 404: Not found
+      if (error.name === "CastError") {
+        return res.status(404).json(`Location with id ${placeId} not found!`);
+      }
+
+      next(error);
+    }
+  }
+);
+
 // Get /me/count - Count of all Reviews written by currently logged in user
 router.get(
   "/me/count",

@@ -354,6 +354,7 @@ const styles = StyleSheet.create({
   container: {
     borderBottomWidth: 1,
     borderBottomColor: "lightgray",
+    width: "100%",
   },
   ratingView: {
     padding: 7,

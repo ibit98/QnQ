@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  container: { minHeight: "100%", backgroundColor: "white" },
   locationRatingView: {
     backgroundColor: "white",
     display: "flex",
@@ -19,8 +20,9 @@ const styles = StyleSheet.create({
   myReviewContainer: {
     padding: 10,
     paddingBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: "#fcf3f0",
     alignItems: "center",
+    width: "100%",
   },
   myReviewBannerPrimary: {
     justifyContent: "center",
@@ -33,9 +35,7 @@ const styles = StyleSheet.create({
   reviewsContainer: {
     backgroundColor: "white",
   },
-  reviewList: {
-    marginBottom: 335,
-  },
+  reviewList: {},
   reviewsHeader: {
     fontSize: 20,
     padding: 13,

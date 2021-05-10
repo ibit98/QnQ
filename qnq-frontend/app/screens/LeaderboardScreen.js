@@ -117,8 +117,6 @@ export default function LeaderboardScreen() {
 
       const rank = await jsonResponse.json();
 
-      console.log(rank);
-
       dispatch({ type: "UPDATE_MY_RANK", data: { rank } });
     } catch (e) {
       console.error(e);
